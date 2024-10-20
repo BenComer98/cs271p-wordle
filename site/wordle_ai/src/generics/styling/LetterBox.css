@@ -1,0 +1,23 @@
+[status=0] {
+  background-color: red;
+  color: white;
+}
+
+[status=1] {
+  background-color: lightgrey;
+  color: black;
+}
+
+[status=2] {
+  background-color: grey;
+  color: black;
+}
+
+[status=3] {
+  background-color:darkgoldenrod;
+  color: black;
+}
+
+[status=4] {
+  background-color:lawngreen;
+}
