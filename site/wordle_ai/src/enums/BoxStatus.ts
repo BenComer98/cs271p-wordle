@@ -1,7 +1,7 @@
 export enum BoxStatus {
-  Off=0,
-  Ready=1,
-  Incorrect=2,
-  Misaligned=3,
-  Aligned=4
+  Off='o',
+  Ready='r',
+  Incorrect='i',
+  Misaligned='m',
+  Aligned='a'
 }

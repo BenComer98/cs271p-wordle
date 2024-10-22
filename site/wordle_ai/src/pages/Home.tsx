@@ -1,25 +1,9 @@
-import { off } from "process";
-import LetterBox from "../generics/LetterBox";
 import { BoxStatus } from "../enums/BoxStatus";
+import LetterBoxRow from "../generics/LetterBoxRow";
+import NewLBRow from "../hooks/NewLBRow";
+import LetterBoxProps from "../interfaces/LetterBoxProps";
 
 export default function Home() {
-  return (
-    <div>
-      <LetterBox status={BoxStatus.Off}>
-        B
-      </LetterBox>
-      <LetterBox status={BoxStatus.Ready}>
-        R
-      </LetterBox>
-      <LetterBox status={BoxStatus.Incorrect}>
-        E
-      </LetterBox>
-      <LetterBox status={BoxStatus.Misaligned}>
-        A
-      </LetterBox>
-      <LetterBox status={BoxStatus.Aligned}>
-        D
-      </LetterBox>
-    </div>
-  );
+  const letters: string[] = ['B', 'R', 'E', 'A', 'D'];
+  return <NewLBRow letters={letters}/>;
 }

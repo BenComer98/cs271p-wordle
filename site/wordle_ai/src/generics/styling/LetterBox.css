@@ -1,23 +1,32 @@
-[status=0] {
-  background-color: red;
+.LetterBox {
+  text-align: center;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-size: 600%;
+  margin-left: 1%;
+  margin-right: 1%;
+}
+
+[boxStatus='o'] {
+  background-color: black;
   color: white;
 }
 
-[status=1] {
-  background-color: lightgrey;
+[boxStatus='r'] {
+  background-color: rgb(233, 233, 233);
   color: black;
 }
 
-[status=2] {
-  background-color: grey;
+[boxStatus='i'] {
+  background-color: rgb(175, 175, 175);
   color: black;
 }
 
-[status=3] {
-  background-color:darkgoldenrod;
+[boxStatus='m'] {
+  background-color:rgb(250, 211, 112);
   color: black;
 }
 
-[status=4] {
-  background-color:lawngreen;
+[boxStatus='a'] {
+  background-color:rgb(146, 255, 103);
+  color: black;
 }

@@ -7,5 +7,5 @@ export default interface LetterBoxProps extends PropsWithChildren {
   onClick?: MouseEventHandler,
   onHover?: MouseEventHandler,
   on?: boolean,
-  status: BoxStatus
+  boxStatus: BoxStatus
 }
