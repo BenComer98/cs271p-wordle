@@ -7,10 +7,7 @@ export default function LetterBoxRow(props: LetterBoxRowProps) {
     return <LetterBox {...props}>{props.children}</LetterBox>
   }) || null;
   
-  if (!boxes) return null;
-  else {
-    return <div className="LetterBoxRow">
-      {boxes}
-    </div>
-  }
+  return <div className="LetterBoxRow">
+    {boxes}
+  </div>
 }

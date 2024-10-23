@@ -1,9 +1,10 @@
-import { BoxStatus } from "../enums/BoxStatus";
 import LetterBoxRow from "../generics/LetterBoxRow";
-import NewLBRow from "../hooks/NewLBRow";
-import LetterBoxProps from "../interfaces/LetterBoxProps";
+import createLetterBoxRowProps from "../hooks/createLetterBoxRowProps";
 
 export default function Home() {
-  const letters: string[] = ['B', 'R', 'E', 'A', 'D'];
-  return <NewLBRow letters={letters}/>;
+  return <div className="Home">
+    <LetterBoxRow boxProps={createLetterBoxRowProps("BRICK", true)}/>
+    <LetterBoxRow boxProps={createLetterBoxRowProps("GRAIN", true)}/>
+    <LetterBoxRow boxProps={createLetterBoxRowProps("CHAIN", true)}/>
+  </div>;
 }

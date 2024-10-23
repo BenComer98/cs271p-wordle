@@ -3,4 +3,5 @@ import LetterBoxProps from "./LetterBoxProps";
 
 export default interface LetterBoxRowProps extends PropsWithChildren {
   boxProps?: LetterBoxProps[];
+  active?: boolean; // If und. assume false
 }
