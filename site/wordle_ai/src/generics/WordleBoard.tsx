@@ -10,7 +10,7 @@ export default function WordleBoard(props: WordleBoardProps): JSX.Element {
   const board = props.board;
   const jsxBoard = <div>
     {board.grid.map((guess, r) => {
-      const boxProps = guess.map((letter, c) => {
+      const boxProps = guess.map((letter) => {
         return {
           boxStatus: letter.status,
           children: letter.letter

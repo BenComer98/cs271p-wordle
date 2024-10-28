@@ -1,6 +1,6 @@
-import WordleBoard from "../components/WordleBoard";
+import WordleBoard_ from "../components/WordleBoard_";
 
 export default interface WordleBoardProps {
-  board?: WordleBoard;
+  board?: WordleBoard_;
   actualWord?: string;
 }
