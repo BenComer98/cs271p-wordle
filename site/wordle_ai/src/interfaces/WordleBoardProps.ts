@@ -1,6 +1,6 @@
-import LetterBoxRowProps from "./LetterBoxRowProps";
+import WordleBoard from "../components/WordleBoard";
 
 export default interface WordleBoardProps {
-  board?: LetterBoxRowProps[];
+  board?: WordleBoard;
   actualWord?: string;
 }
