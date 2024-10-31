@@ -1,8 +1,8 @@
-import LetterBox_ from "../components/LetterBox_";
+import LetterBox_ from "../../components/LetterBox_";
 
 export default interface WordleBoard_Params {
   wordSize?: number;
   guessesAllowed?: number;
-  grid?: LetterBox_[][];
+  grid: LetterBox_[][];
   actualWord?: string;
 }

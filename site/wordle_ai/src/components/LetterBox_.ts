@@ -1,5 +1,5 @@
 import { BoxStatus } from "../enums/BoxStatus";
-import LetterBox_Params from "../interfaces/LetterBox_Params";
+import LetterBox_Params from "../interfaces/class_params/LetterBox_Params";
 
 export default class LetterBox_ {
   letter: string;

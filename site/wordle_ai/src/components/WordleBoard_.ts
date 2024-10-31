@@ -1,5 +1,5 @@
 import { BoxStatus } from "../enums/BoxStatus";
-import WordleBoard_Params from "../interfaces/WordleBoard_Params";
+import WordleBoard_Params from "../interfaces/class_params/WordleBoard_Params";
 import LetterBox_ from "./LetterBox_";
 
 export default class WordleBoard_ {

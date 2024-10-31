@@ -1,4 +1,4 @@
-import WordleBoardProps from "../interfaces/WordleBoardProps";
+import WordleBoardProps from "../interfaces/element_props/WordleBoardProps";
 import LetterBoxRow from "./LetterBoxRow";
 
 export default function WordleBoard(props: WordleBoardProps): JSX.Element {
@@ -13,7 +13,7 @@ export default function WordleBoard(props: WordleBoardProps): JSX.Element {
       const boxProps = guess.map((letter) => {
         return {
           boxStatus: letter.status,
-          children: letter.letter
+          value: letter.letter
         }
       });
 

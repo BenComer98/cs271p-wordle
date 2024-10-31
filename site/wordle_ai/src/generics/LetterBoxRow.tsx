@@ -1,4 +1,4 @@
-import LetterBoxRowProps from "../interfaces/LetterBoxRowProps"
+import LetterBoxRowProps from "../interfaces/element_props/LetterBoxRowProps"
 import LetterBox from "./LetterBox"
 import "./styling/LetterBoxRow.css"
 
