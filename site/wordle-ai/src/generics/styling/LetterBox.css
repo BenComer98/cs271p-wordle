@@ -1,0 +1,35 @@
+.LetterBox {
+  text-align: center;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-size: 9vw;
+  margin-left: 1vw;
+  margin-right: 1vw;
+  width: 7vw;
+  margin-top: 2vw;
+  margin-bottom: 0vw;
+}
+
+[boxStatus='o'] {
+  background-color: black;
+  color: black;
+}
+
+[boxStatus='r'] {
+  background-color: rgb(233, 233, 233);
+  color: black;
+}
+
+[boxStatus='i'] {
+  background-color: rgb(175, 175, 175);
+  color: black;
+}
+
+[boxStatus='m'] {
+  background-color:rgb(250, 211, 112);
+  color: black;
+}
+
+[boxStatus='a'] {
+  background-color:rgb(146, 255, 103);
+  color: black;
+}
