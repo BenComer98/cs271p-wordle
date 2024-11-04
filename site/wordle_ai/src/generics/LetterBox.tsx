@@ -1,10 +1,13 @@
-import LetterBoxProps from "../interfaces/element_props/LetterBoxProps";
-import "./styling/LetterBox.css";
+import LetterBoxProps from "../interfaces/LetterBox";
+import "./styles/LetterBox.css";
 
-export default function LetterBox(props: LetterBoxProps): JSX.Element {
+export default function LetterBox(props: LetterBoxProps) {
   return (
-    <h1 className="LetterBox" {...props}>
-      {props.children}
-    </h1>
-  );
+    <div
+      className="LetterBox"
+      {...props}
+    >
+      {props.letter}
+    </div>
+  )
 }

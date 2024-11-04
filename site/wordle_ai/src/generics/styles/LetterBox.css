@@ -1,0 +1,37 @@
+.LetterBox {
+  text-align: center;
+  font-family:HelveticaNeue-Light,Helvetica Neue Light,Helvetica Neue,Helvetica,Arial,Lucida Grande,sans-serif;
+  font-size: 5vw;
+  margin-left: 0.3vw;
+  margin-right: 0.3vw;
+  height: 8.5vh;
+  line-height: 9.5vh;
+  width: 8vw;
+  margin-top: 1vw;
+  margin-bottom: 0vw;
+}
+
+[status='d'] {
+  background-color: black;
+  color: black;
+}
+
+[status='r'] {
+  background-color: rgb(233, 233, 233);
+  color: black;
+}
+
+[status='i'] {
+  background-color: rgb(175, 175, 175);
+  color: black;
+}
+
+[status='m'] {
+  background-color:rgb(250, 211, 112);
+  color: black;
+}
+
+[status='a'] {
+  background-color:rgb(146, 255, 103);
+  color: black;
+}

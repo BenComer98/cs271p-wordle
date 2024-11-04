@@ -1,0 +1,10 @@
+@import url('react-simple-keyboard/build/css/index.css');
+
+.hg-theme-default {
+  position: fixed;
+  bottom: 0;
+}
+
+.hg-theme-default .hg-button {
+  height: 8vh;
+}

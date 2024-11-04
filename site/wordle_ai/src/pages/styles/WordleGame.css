@@ -1,0 +1,17 @@
+.WordleGame {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.Board {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.Keyboard {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 25%;
+}
