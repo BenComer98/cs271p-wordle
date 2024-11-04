@@ -1,13 +1,19 @@
-import LetterBoxRowProps from "../interfaces/element_props/LetterBoxRowProps"
-import LetterBox from "./LetterBox"
-import "./styling/LetterBoxRow.css"
+import LetterBoxRowProps from "../interfaces/LetterBoxRowProps";
+import LetterBox from "./LetterBox";
+import "./styles/LetterBoxRow.css";
 
 export default function LetterBoxRow(props: LetterBoxRowProps) {
-  const boxes = props.boxProps?.map((props) => {
-    return <LetterBox {...props}>{props.children}</LetterBox>
-  }) || null;
-  
-  return <div className="LetterBoxRow">
-    {boxes}
-  </div>
+  return (
+    <div className="LetterBoxRow">
+      {Array.from({length: 5}).map((_, i) => {
+        return (
+          <LetterBox
+            key={i}
+            letter={props.guess[i] || "_"}
+            status={props.feedback[i]}
+          />
+        )
+      })}
+    </div>
+  )
 }
