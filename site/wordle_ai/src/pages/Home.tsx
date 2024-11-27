@@ -1,5 +1,9 @@
-import WordleGame from "./WordleGame";
+import MainMenuButton from "../generics/MainMenuButton";
+import "./styles/Home.css";
 
 export default function Home() {
-  return <WordleGame answer="APPLE"/>
+  return <div className="Home">
+    <MainMenuButton label="Play Wordle!" route="/play" />
+    <MainMenuButton label="Wordle Solver (AI)" route="/solver" />
+  </div>
 }

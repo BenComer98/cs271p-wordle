@@ -1,4 +1,4 @@
-.LetterBox {
+.LetterBoxEnter {
   text-align: center;
   font-family:HelveticaNeue-Light,Helvetica Neue Light,Helvetica Neue,Helvetica,Arial,Lucida Grande,sans-serif;
   font-size: 5vh;
@@ -9,29 +9,36 @@
   width: 8vw;
   margin-top: 1vw;
   margin-bottom: 0vw;
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
-[status='d'] {
+[data-status='d'] {
   background-color: black;
   color: black;
 }
 
-[status='r'] {
+[data-status='r'] {
   background-color: rgb(233, 233, 233);
   color: black;
 }
 
-[status='i'] {
+[data-status='i'] {
   background-color: rgb(175, 175, 175);
   color: black;
 }
 
-[status='m'] {
+[data-status='m'] {
   background-color:rgb(250, 211, 112);
   color: black;
 }
 
-[status='a'] {
+[data-status='a'] {
   background-color:rgb(146, 255, 103);
   color: black;
+}
+
+[data-selected="true"] {
+  border: 2px solid blue;
 }

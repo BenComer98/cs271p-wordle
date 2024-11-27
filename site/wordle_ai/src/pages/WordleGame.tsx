@@ -11,9 +11,13 @@ import KeyboardProps from "../interfaces/KeyboardProps";
 import "./styles/WordleGame.css";
 
 export default function WordleGame(props: WordleGameProps) {
+  if (!props.answer) {
+    props.answer = "APPLE"; // Randomize!! API
+  }
+
   const [currentGuess, setCurrentGuess] = useState("");
   const [guesses, setGuesses] = useState(new Array<string>(0));
-  const [answer, setAnswer] = useState(props.answer);
+  const [answer] = useState(props.answer); // Keeping for future use
   const [gameStatus, setGameStatus] = useState(GameStatus.Playing);
   const [feedback, setFeedback] = useState(new Array<LetterBoxStatus[]>(0));
   const [row, setRow] = useState(1);

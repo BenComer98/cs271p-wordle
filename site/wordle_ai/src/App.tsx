@@ -1,9 +1,21 @@
+import getRandomWord from './backend/getRandomWord';
+import Route from './generics/Route';
 import Home from './pages/Home';
+import WordleGame from './pages/WordleGame';
+import WordleSolver from './pages/WordleSolver';
 
 function App() {
-  return (
-    <Home />
-  );
+  return <div>
+    <Route path="/">
+      <Home />
+    </Route>
+    <Route path="/play">
+      <WordleGame answer={getRandomWord()}/>
+    </Route>
+    <Route path="/solver">
+      <WordleSolver />
+    </Route>
+  </div>
 }
 
 export default App;

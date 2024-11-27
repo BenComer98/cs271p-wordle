@@ -1,3 +1,3 @@
 export default interface WordleGameProps {
-  answer: string
+  answer?: string
 }

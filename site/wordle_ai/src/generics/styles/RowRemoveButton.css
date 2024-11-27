@@ -1,0 +1,18 @@
+.RowRemoveButton {
+  background-color: transparent;
+  border: 2px solid red;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.RowRemoveButton .minus-sign {
+  width: 20px;
+  height: 2px;
+  background-color: red;
+  display: block;
+}
