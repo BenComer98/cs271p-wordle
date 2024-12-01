@@ -31,7 +31,7 @@ export default function WordleSolver(props: WordleSolverProps) {
   const [selectedRow, setSelectedRow] = useState<number>(0);
   const [selectedColumn, setSelectedColumn] = useState<number>(0);
   const [activeRows, setActiveRows] = useState(1);
-  const [algorithm, setAlgorithm] = useState(Algorithm.ConstraintSat);
+  const [algorithm, setAlgorithm] = useState(Algorithm.NoneSelected);
   const [letterBoxes, setLetterBoxes] = useState<LetterBoxEnterProps[][]>(
     getEmptyBoard()
   );
@@ -54,22 +54,42 @@ export default function WordleSolver(props: WordleSolverProps) {
     })
   }
 
-  const handleClick = (rowIndex: number, colIndex: number) => {
-    if (rowIndex >= activeRows) {
-      setLetterBoxes((prevTable: LetterBoxEnterProps[][]) => {
-        const newTable = prevTable.map((row: LetterBoxEnterProps[], index: number) => {
-          return row.map((cell: LetterBoxEnterProps) => {
-            return {
-              ...cell,
-              status: (index >= activeRows && index <= rowIndex) ? LetterBoxStatus.Incorrect : cell.status
-            };
-          });
+  const updateStatusesToActive = (active: number, rowIndex: number) => {
+    console.log("updating with active=", active);
+    setLetterBoxes((prevTable: LetterBoxEnterProps[][]) => {
+      const newTable = prevTable.map((row: LetterBoxEnterProps[], index: number) => {
+        return row.map((cell: LetterBoxEnterProps) => {
+          return {
+            ...cell,
+            status: (index >= activeRows && index <= rowIndex) ? LetterBoxStatus.Incorrect : cell.status
+          };
         });
-
-        return newTable;
       });
-      setActiveRows(rowIndex+1);
-    }
+
+      return newTable;
+    });
+  }
+
+  const handleClick = (rowIndex: number, colIndex: number) => {
+    setActiveRows((active: number) => {
+      if (rowIndex >= activeRows) {
+        setLetterBoxes((prevTable: LetterBoxEnterProps[][]) => {
+          const newTable = prevTable.map((row: LetterBoxEnterProps[], index: number) => {
+            return row.map((cell: LetterBoxEnterProps) => {
+              return {
+                ...cell,
+                status: (index >= activeRows && index <= rowIndex) ? LetterBoxStatus.Incorrect : cell.status
+              };
+            });
+          });
+  
+          return newTable;
+        });
+        return active + 1;
+      }
+      return active;
+    })
+    
 
     if (rowIndex >= activeRows) {
       setSelectedRow(rowIndex); setSelectedColumn(0);
@@ -119,10 +139,12 @@ export default function WordleSolver(props: WordleSolverProps) {
   };
 
   const handleBackspace = () => {
+    console.log(selectedRow);
     setSelectedColumn((column: number) => {
       setLetterBoxes((table: LetterBoxEnterProps[][]) => {
-        table[selectedRow][column] = {...table[selectedRow][column], letter: "_"};
-        return [...table];
+        const newTable = table;
+        newTable[selectedRow][column] = {...table[selectedRow][column], letter: "_"};
+        return newTable;
       })
 
       return column > 0 ? column - 1 : column;
@@ -130,7 +152,13 @@ export default function WordleSolver(props: WordleSolverProps) {
   }
 
   const handleSubmit = () => {
-    
+    handleDirectionKey("ArrowDown");
+    setSelectedColumn((columnIndex: number) => {
+      if (columnIndex === 4) {
+        return 0;
+      }
+      return columnIndex;
+    });
   }
 
   const handleDirectionKey = (key: string) => {
@@ -142,14 +170,13 @@ export default function WordleSolver(props: WordleSolverProps) {
         break;
       case "ArrowDown":
         setSelectedRow((rowIndex: number) => {
-          if (rowIndex === 5) {
-            return 5;
-          }
+          const rowIndex_ = rowIndex === 5 ? 5 : rowIndex + 1;
           setActiveRows((active: number) => {
-            console.log(active);
-            return active <= rowIndex ? active + 1 : active;
-          });
-          return rowIndex + 1;
+            const active_ = rowIndex + 1 < active || active === 6 ? active : active + 1;
+            updateStatusesToActive(active_, rowIndex+1);
+            return active_;
+          })
+          return rowIndex_;
         });
         break;
       case "ArrowLeft":
@@ -168,7 +195,6 @@ export default function WordleSolver(props: WordleSolverProps) {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const key = event.key;
-      // console.log(key);
       if (isAlpha(key)) {
         handleType(key.toUpperCase());
       }
@@ -213,8 +239,18 @@ export default function WordleSolver(props: WordleSolverProps) {
     })
     
     console.log(suggestOptimalGuess(algorithm, letterBoxes));
-    return suggestOptimalGuess(algorithm, letterBoxes)
+    return suggestOptimalGuess(algorithm, letterBoxes);
   }
+
+  const handleChooseAlgorithm = (algorithm: Algorithm) => {
+    setAlgorithm(algorithm);
+  }
+
+  const options: [Algorithm, string][] = [
+    [Algorithm.ConstraintSat, "Constraint Satisfaction"],
+    [Algorithm.Reinforcement, "Reinforcement Learning"],
+    [Algorithm.RandomGuess, "Random Guesses"]
+  ]
 
   return <div className="WordleSolver">
     <div className="WordleSolverBoard">
@@ -237,7 +273,7 @@ export default function WordleSolver(props: WordleSolverProps) {
       })}
     </div>
     <div className="AI-Options">
-      <Dropdown />
+      <Dropdown handleChange={handleChooseAlgorithm} options={options} selectedValue={algorithm}/>
       <RunAlgorithmButton onClick={handleRunAlgorithm}/>
     </div>
 
