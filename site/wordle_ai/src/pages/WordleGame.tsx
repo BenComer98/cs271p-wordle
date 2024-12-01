@@ -9,15 +9,13 @@ import WordleBoardProps from "../interfaces/WordleBoardProps";
 import Keyboard from "../generics/Keyboard";
 import KeyboardProps from "../interfaces/KeyboardProps";
 import "./styles/WordleGame.css";
+import getRandomWord from "../backend/getRandomWord";
 
 export default function WordleGame(props: WordleGameProps) {
-  if (!props.answer) {
-    props.answer = "APPLE"; // Randomize!! API
-  }
+  const [answer, setAnswer] = useState<string>("");
 
   const [currentGuess, setCurrentGuess] = useState("");
   const [guesses, setGuesses] = useState(new Array<string>(0));
-  const [answer] = useState(props.answer); // Keeping for future use
   const [gameStatus, setGameStatus] = useState(GameStatus.Playing);
   const [feedback, setFeedback] = useState(new Array<LetterBoxStatus[]>(0));
   const [row, setRow] = useState(1);
@@ -73,6 +71,14 @@ export default function WordleGame(props: WordleGameProps) {
       else if (key === "Enter") {
         handleSubmit();
       }
+    }
+
+    
+    if (!props.answer) {
+      setAnswer(getRandomWord()); // Randomize!! API
+    }
+    else {
+      setAnswer(props.answer);
     }
 
     window.addEventListener("keydown", handleKeyDown);
