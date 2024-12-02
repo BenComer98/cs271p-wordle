@@ -1,4 +1,4 @@
-import { isValidWord } from "../backend/isValidWord";
+import isValidWord from "../backend/isValidWord";
 import LetterBoxEnterProps from "../interfaces/LetterBoxEnterProps";
 
 export default function isValidBoard(board: LetterBoxEnterProps[][]) {

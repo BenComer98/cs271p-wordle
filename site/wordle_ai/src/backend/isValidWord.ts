@@ -1,3 +1,3 @@
-export function isValidWord(word: string) {
-  return true;
+export default async function isValidWord(word: string) {
+  return word !== "CUPID";
 }
