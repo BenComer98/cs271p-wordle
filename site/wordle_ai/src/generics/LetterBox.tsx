@@ -1,4 +1,4 @@
-import LetterBoxProps from "../interfaces/LetterBox";
+import LetterBoxProps from "../interfaces/LetterBoxProps";
 import "./styles/LetterBox.css";
 
 export default function LetterBox(props: LetterBoxProps) {

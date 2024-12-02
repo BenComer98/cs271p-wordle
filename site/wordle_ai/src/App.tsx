@@ -7,20 +7,22 @@ import WordleSolver from './pages/WordleSolver';
 import {useEffect, useState} from "react";
 
 function App() {
-  return <div>
-    <Route path="/">
-      <Home />
-    </Route>
-    <Route path="/play">
-      <WordleGameContainer />
-    </Route>
-    <Route path="/solver">
-      <WordleSolver />
-    </Route>
-    <Route path="/beat">
-      <BeatTheBot />
-    </Route>
-  </div>
+  return (
+    <div>
+      <Route path="/">
+        <Home />
+      </Route>
+      <Route path="/play">
+        <WordleGame answer={getRandomWord()} />
+      </Route>
+      <Route path="/solver">
+        <WordleSolver />
+      </Route>
+      <Route path="/beat">
+        <BeatTheBot />
+      </Route>
+    </div>
+  );
 }
 
 
