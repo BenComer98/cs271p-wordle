@@ -1,6 +1,8 @@
 import getRandomWord from './backend/getRandomWord';
 import Route from './generics/Route';
 import BeatTheBot from './pages/BeatTheBot';
+import CompareAlgorithms from './pages/CompareAlgorithms';
+import Credits from './pages/Credits';
 import Home from './pages/Home';
 import WordleGame from './pages/WordleGame';
 import WordleSolver from './pages/WordleSolver';
@@ -18,8 +20,14 @@ function App() {
       <Route path="/solver">
         <WordleSolver />
       </Route>
+      <Route path="/compare">
+        <CompareAlgorithms />
+      </Route>
       <Route path="/beat">
         <BeatTheBot />
+      </Route>
+      <Route path="/credits">
+        <Credits />
       </Route>
     </div>
   );

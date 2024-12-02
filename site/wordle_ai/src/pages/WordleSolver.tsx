@@ -11,9 +11,8 @@ import Dropdown from "../generics/Dropdown";
 import RunAlgorithmButton from "../generics/RunAlgorithmButton";
 import suggestOptimalGuess from "../backend/suggestOptimalGuess";
 import { Algorithm } from "../enums/Algorithm";
-import { isValidWord } from "../backend/isValidWord";
+import isValidWord from "../backend/isValidWord";
 import containsBlank from "../hooks/containsBlank";
-import Popup from "reactjs-popup"
 import isDirectionKey from "../hooks/isDirectionKey";
 
 export default function WordleSolver(props: WordleSolverProps) {

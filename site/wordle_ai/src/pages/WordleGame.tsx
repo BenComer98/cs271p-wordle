@@ -27,13 +27,11 @@ export default function WordleGame(props: WordleGameProps) {
   const maxGuesses = 6;
 
   const setAnswerAsync = async () => {
-    console.log("Setting answer to random word");
     const randomWord = await getRandomWord();
     setAnswer(randomWord)
   }
 
   const resetGame = (word?: string) => {
-    console.log("Resetting game");
     setGameStatus(GameStatus.Playing);
     if (word) {
       setAnswer(word);
