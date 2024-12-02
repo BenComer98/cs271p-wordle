@@ -69,7 +69,21 @@ class WordleCSP:
                 output += "No possible words left based on constraints. \n"
                 return output
 
-            self.current_guess = self.possible_words[0]
+            self.current_guess = self.choose_optimal_guess()
             attempt += 1
         output += f"Solved! The target word is '{self.current_guess}' in {attempt} attempts."
         return output
+
+    def choose_optimal_guess(self):
+        from collections import Counter
+        position_counts = [Counter() for _ in range(5)]
+        for word in self.possible_words:
+            for i, char in enumerate(word):
+                position_counts[i][char] += 1
+        word_scores = []
+        for word in self.possible_words:
+            score = sum(position_counts[i][char] for i, char in enumerate(word))
+            word_scores.append((score, word))
+        word_scores.sort(reverse=True)
+        best_score, best_word = word_scores[0]
+        return best_word

@@ -12,6 +12,7 @@ setup(
     include_package_data=True,
     install_requires=[
         "Flask>=3.0",  # Ensures Flask is installed
+        "flask-cors"
     ],
     entry_points={
         'console_scripts': [

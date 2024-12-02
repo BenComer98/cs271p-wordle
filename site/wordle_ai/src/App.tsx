@@ -4,6 +4,7 @@ import BeatTheBot from './pages/BeatTheBot';
 import Home from './pages/Home';
 import WordleGame from './pages/WordleGame';
 import WordleSolver from './pages/WordleSolver';
+import {useEffect, useState} from "react";
 
 function App() {
   return (
@@ -24,4 +25,18 @@ function App() {
   );
 }
 
+
+function WordleGameContainer() {
+  const [answer, setAnswer] = useState<string>("APPLE");
+
+  useEffect(() => {
+    async function fetchAnswer() {
+      const word = await getRandomWord();
+      setAnswer(word);
+    }
+    fetchAnswer();
+  }, []);
+
+  return <WordleGame answer={answer} />;
+}
 export default App;
