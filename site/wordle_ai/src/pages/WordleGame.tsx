@@ -26,9 +26,20 @@ export default function WordleGame(props: WordleGameProps) {
   const [afterGamePopup, setAfterGamePopup] = useState<PopupProps>({});
   const maxGuesses = 6;
 
+  const setAnswerAsync = async () => {
+    console.log("Setting answer to random word");
+    const randomWord = await getRandomWord();
+    setAnswer(randomWord)
+  }
+
   const resetGame = (word?: string) => {
+    console.log("Resetting game");
     setGameStatus(GameStatus.Playing);
-    setAnswer(word || getRandomWord());
+    if (word) {
+      setAnswer(word);
+    } else {
+      setAnswerAsync();
+    }
     setCurrentGuess("");
     setGuesses(new Array<string>(0));
     setFeedback(new Array<LetterBoxStatus[]>(0));
@@ -126,6 +137,15 @@ export default function WordleGame(props: WordleGameProps) {
   };
 
   useEffect(() => {
+    if (!props.answer) {
+      setAnswerAsync();
+    }
+    else {
+      setAnswer(props.answer);
+    }
+  }, []);
+
+  useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       console.log(event);
       const key = event.key;
@@ -138,14 +158,6 @@ export default function WordleGame(props: WordleGameProps) {
       else if (key === "Enter") {
         handleSubmit();
       }
-    }
-
-    
-    if (!props.answer) {
-      setAnswer(getRandomWord()); // Randomize!! API
-    }
-    else {
-      setAnswer(props.answer);
     }
 
     window.addEventListener("keydown", handleKeyDown);
