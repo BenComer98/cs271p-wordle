@@ -13,7 +13,7 @@ function App() {
         <Home />
       </Route>
       <Route path="/play">
-        <WordleGame answer={getRandomWord()} />
+        <WordleGame />
       </Route>
       <Route path="/solver">
         <WordleSolver />

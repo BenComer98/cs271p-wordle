@@ -28,9 +28,9 @@ export default function BeatTheBot() {
     selectedValue: algorithm
   }
 
-  const handleStartPlaying: MouseEventHandler<HTMLButtonElement> = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleStartPlaying: MouseEventHandler<HTMLButtonElement> = async (event: React.MouseEvent<HTMLButtonElement>) => {
     if (algorithm !== Algorithm.NoneSelected) {
-      setAnswer(getRandomWord());
+      setAnswer(await getRandomWord());
       setAiResults(runAlgorithm(algorithm, answer));
       setGameStatus(GameStatus.Playing);
     }
