@@ -139,15 +139,20 @@ export default function WordleSolver(props: WordleSolverProps) {
   };
 
   const handleBackspace = () => {
-    console.log(selectedRow);
-    setSelectedColumn((column: number) => {
-      setLetterBoxes((table: LetterBoxEnterProps[][]) => {
-        const newTable = table;
-        newTable[selectedRow][column] = {...table[selectedRow][column], letter: "_"};
-        return newTable;
-      })
+    setSelectedRow((row: number) => {
+      setSelectedColumn((column: number) => {
+        const newColumn = column > 0 ? column - 1 : column;
+        setLetterBoxes((table: LetterBoxEnterProps[][]) => {
+          const newTable = table;
+          console.log(row, column);
+          newTable[row][column] = {...table[row][column], letter: "_"};
+          return newTable;
+        });
+        console.log(column > 0 ? column - 1 : column);
+        return newColumn;
+      });
 
-      return column > 0 ? column - 1 : column;
+      return row;
     });
   }
 
@@ -199,6 +204,7 @@ export default function WordleSolver(props: WordleSolverProps) {
         handleType(key.toUpperCase());
       }
       else if (key === "Backspace") {
+        console.log("Backspacing");
         handleBackspace();
       }
       else if (key === "Enter") {
@@ -228,6 +234,7 @@ export default function WordleSolver(props: WordleSolverProps) {
         return rowIndex;
       }
     });
+    setSelectedRow(rowIndex === 0 ? rowIndex : rowIndex-1);
   }
 
   const handleRunAlgorithm = () => {

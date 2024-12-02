@@ -6,5 +6,5 @@ export default function suggestOptimalGuess(
   board: LetterBoxEnterProps[][]
 ): string {
   console.log("Running " + algorithm);
-  return "APPLE"
+  return "APPLE";
 }

@@ -6,20 +6,22 @@ import WordleGame from './pages/WordleGame';
 import WordleSolver from './pages/WordleSolver';
 
 function App() {
-  return <div>
-    <Route path="/">
-      <Home />
-    </Route>
-    <Route path="/play">
-      <WordleGame answer={getRandomWord()}/>
-    </Route>
-    <Route path="/solver">
-      <WordleSolver />
-    </Route>
-    <Route path="/beat">
-      <BeatTheBot />
-    </Route>
-  </div>
+  return (
+    <div>
+      <Route path="/">
+        <Home />
+      </Route>
+      <Route path="/play">
+        <WordleGame answer={getRandomWord()} />
+      </Route>
+      <Route path="/solver">
+        <WordleSolver />
+      </Route>
+      <Route path="/beat">
+        <BeatTheBot />
+      </Route>
+    </div>
+  );
 }
 
 export default App;

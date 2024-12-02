@@ -4,8 +4,6 @@ import LetterBoxRow from "./LetterBoxRow";
 import "./styles/WordleBoard.css";
 
 export default function WordleBoard(props: WordleBoardProps) {
-  console.log(props.maxGuesses - props.guesses.length - 1)
-  
   return (
     <div className="WordleBoard">
       {props.guesses.map((guess: string, rowIndex: number) => {

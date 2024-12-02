@@ -10,16 +10,46 @@ import Keyboard from "../generics/Keyboard";
 import KeyboardProps from "../interfaces/KeyboardProps";
 import "./styles/WordleGame.css";
 import getRandomWord from "../backend/getRandomWord";
+import Popup from "../generics/Popup";
+import PopupProps from "../interfaces/PopupProps";
+import Button from "../generics/Button";
+import MainMenuButton from "../generics/MainMenuButton";
+import LetterBoxProps from "../interfaces/LetterBoxProps";
 
 export default function WordleGame(props: WordleGameProps) {
   const [answer, setAnswer] = useState<string>("");
-
   const [currentGuess, setCurrentGuess] = useState("");
   const [guesses, setGuesses] = useState(new Array<string>(0));
   const [gameStatus, setGameStatus] = useState(GameStatus.Playing);
   const [feedback, setFeedback] = useState(new Array<LetterBoxStatus[]>(0));
   const [row, setRow] = useState(1);
+  const [afterGamePopup, setAfterGamePopup] = useState<PopupProps>({});
   const maxGuesses = 6;
+
+  const resetGame = (word?: string) => {
+    setGameStatus(GameStatus.Playing);
+    setAnswer(word || getRandomWord());
+    setCurrentGuess("");
+    setGuesses(new Array<string>(0));
+    setFeedback(new Array<LetterBoxStatus[]>(0));
+    setRow(1);
+  }
+
+  const getBoardAsLetterBoxes = () => {
+    let board: LetterBoxProps[][] = []
+    for (let i = 0; i < guesses.length; ++i) {
+      let newRow: LetterBoxProps[] = []
+      for (let j = 0; j < 6; ++j) {
+        newRow.push({
+          key: j, // Unused
+          letter: guesses[i][j],
+          status: feedback[i][j]
+        });
+      }
+      board.push(newRow);
+    }
+    return board;
+  }
 
   const handleType = (letter: string) => {
     console.log("Entered " + letter);
@@ -36,11 +66,8 @@ export default function WordleGame(props: WordleGameProps) {
   }
 
   const handleSubmit = () => {
-    console.log("Submitted?");
-    console.log(currentGuess);
     if (currentGuess.length !== answer.length || gameStatus !== GameStatus.Playing) return;
 
-    console.log("Advancing");
     const guessFeedback = checkGuess(currentGuess, answer);
     setFeedback([...feedback, guessFeedback]);
     setGuesses([...guesses, currentGuess]);
@@ -48,10 +75,50 @@ export default function WordleGame(props: WordleGameProps) {
 
     if (currentGuess === answer) {
       setGameStatus(GameStatus.Won);
+      if (props.setFinalBoard) {
+        props.setFinalBoard(getBoardAsLetterBoxes());
+      }
+      setAfterGamePopup({
+        title: props.popup?.winTitle || props.popup?.title || "YOU WIN!",
+        content: props.popup?.winContent || props.popup?.content || <div>
+          <div>
+            {
+              row === 1 ? <div>You got the word right on the first try! WOW!</div> :
+              row === 2 ? <div>You got the word right on the second guess! Incredible!</div> :
+              row === 3 ? <div>You got the word right on the third guess! Impressive!</div> :
+              row === 4 ? <div>You got the word right on the fourth try! Well done!</div> :
+              row === 5 ? <div>You got the word right on the fifth try! Nice job!</div> :
+              <div>You got the word right on your last try! Good save!</div>
+            }
+          </div>
+          <MainMenuButton route="/" label="Go Back to Home" />
+          <Button onClick={(_: React.MouseEvent) => {
+            resetGame();
+          }}>
+            Play Again!
+          </Button>
+        </div>
+      });
     }
     else if (row >= maxGuesses) {
       setGameStatus(GameStatus.Lost);
-      setCurrentGuess(answer);
+      if (props.setFinalBoard) {
+        props.setFinalBoard(getBoardAsLetterBoxes());
+      }
+      setAfterGamePopup({
+        title: props.popup?.loseTitle || props.popup?.title || "You lost...",
+        content: props.popup?.loseContent || props.popup?.content || <div>
+          <div>
+            The correct word was {answer.toUpperCase()}. Better luck next time!
+          </div>
+          <MainMenuButton route="/" label="Go Back to Main Menu" />
+          <Button onClick={(_: React.MouseEvent) => {
+            resetGame();
+          }}>
+            Try Again!
+          </Button>
+        </div>
+      });
     }
     else {
       setCurrentGuess("");
@@ -103,13 +170,20 @@ export default function WordleGame(props: WordleGameProps) {
   }
 
   return (
-    <div className="WordleGame">
-      <div className="Board">
-        <WordleBoard {...boardProps} />
-      </div>
-      <div className="Keyboard">
-        <Keyboard {...keyboardProps} />
-      </div>
+    <div> 
+      {gameStatus === GameStatus.Playing && 
+        <div className="WordleGame">
+          <div className="Board">
+            <WordleBoard {...boardProps} />
+          </div>
+          <div className="Keyboard">
+            <Keyboard {...keyboardProps} />
+          </div>
+        </div>
+      }
+      {(gameStatus === GameStatus.Won || gameStatus === GameStatus.Lost) && 
+        <Popup {...afterGamePopup}/>
+      }
     </div>
   );
 }

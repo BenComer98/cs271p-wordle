@@ -1,3 +1,8 @@
+import GameEndPopupProps from "./GameEndPopupProps";
+import LetterBoxProps from "./LetterBoxProps";
+
 export default interface WordleGameProps {
-  answer?: string
+  answer?: string;
+  popup?: GameEndPopupProps;
+  setFinalBoard?: (board: LetterBoxProps[][]) => void;
 }
