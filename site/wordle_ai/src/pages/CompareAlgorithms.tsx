@@ -4,28 +4,39 @@ import getRandomWord from "../backend/getRandomWord";
 import Button from "../generics/Button";
 import isValidWord from "../backend/isValidWord";
 import "./styles/CompareAlgorithms.css";
+import runAlgorithm from "../backend/runAlgorithm";
+import { Algorithm } from "../enums/Algorithm";
+import LetterBoxProps from "../interfaces/LetterBoxProps";
+import WordleBoard from "../generics/WordleBoard";
+import AlgorithmPanel from "../generics/AlgorithmPanel";
 
 export default function CompareAlgorithms() {
   const [word, setWord] = useState("");
   const [showInvalidWord, setShowInvalidWord] = useState(false);
+  const [constraintSatResult, setConstraintSatResult] = useState<LetterBoxProps[][] | null>(null);
+  const [reinforcementResult, setReinforcementResult] = useState<LetterBoxProps[][] | null>(null);
+  const [randomResult, setRandomResult] = useState<LetterBoxProps[][] | null>(null);
 
   const setWordAsync = async () => {
     const newWord = await getRandomWord();
     setWord(newWord);
   }
 
+  const runAlgorithms = async () => {
+    console.log("Running algorithms");
+    setConstraintSatResult(await runAlgorithm(Algorithm.ConstraintSat, word));
+    setReinforcementResult(await runAlgorithm(Algorithm.Reinforcement, word));
+    setRandomResult(await runAlgorithm(Algorithm.RandomGuess, word));
+  }
+
   useEffect(() => {
     setWordAsync();
   }, []);
 
-  const runAlgorithms = async () => {
-
-  }
-
-  const handleChangeInput = async (input: string) => {
-    setWord(input.toUpperCase());
-    if (input.length === 5) {
-      if (await isValidWord(input.toUpperCase())) {
+  const handleClick = async () => {
+    if (word.length === 5) {
+      if (await isValidWord(word)) {
+        setShowInvalidWord(false);
         runAlgorithms();
       }
       else {
@@ -37,17 +48,48 @@ export default function CompareAlgorithms() {
     }
   }
 
+  const handleChangeInput = (input: string) => {
+    setWord(input.toUpperCase());
+  }
+
   const handleClickRandom = () => {
     setWordAsync();
     setShowInvalidWord(false);
+    handleClick();
+  }
+
+  const getBoardFromResult = (result: LetterBoxProps[][] | null) => {
+    console.log(result);
+    if (!result || result.length === 0) return null;
+    return (
+      <WordleBoard
+        guesses={result.map((guess: LetterBoxProps[]) => {
+          return guess.map((letterBox: LetterBoxProps) => {
+            return letterBox.letter;
+          }).join("");
+        })}
+
+        feedback={result.map((guess: LetterBoxProps[]) => {
+          return guess.map((letterBox: LetterBoxProps) => {
+            return letterBox.status;
+          });
+        })}
+
+        currentGuess={""}
+        letters={5}
+        maxGuesses={6}
+        displayOnly={true}
+        showOnlyGuessedRows={true}
+      />
+    )
   }
 
   return (
-    <div>
-      <div>
-        Enter a word OR click 'Random' for a Random Word!
+    <div className="Page">
+      <div className="Prompt">
+        Submit a word OR click 'Random' for a Random Word!
       </div>
-      <div>
+      <div className="Entry">
         <UserInput value={word} handleChange={handleChangeInput}/>
         <Button onClick={handleClickRandom}>
           Random
@@ -56,6 +98,25 @@ export default function CompareAlgorithms() {
       {showInvalidWord && (<div className="ShowInvalidWord">
         Sorry! {word} is not a valid word.
       </div>)}
+      <div className="AI-Algorithm">
+        {constraintSatResult && getBoardFromResult(constraintSatResult)}
+        {constraintSatResult && <AlgorithmPanel algorithm="Constraint Satisfaction">
+          TODO: Gaurav Please Describe
+        </AlgorithmPanel>}
+      </div>
+      <div className="AI-Algorithm">
+        {reinforcementResult && getBoardFromResult(reinforcementResult)}
+        {reinforcementResult && <AlgorithmPanel algorithm="Reinforcement Learning">
+          TODO: Adit Please Describe
+        </AlgorithmPanel>}
+      </div>
+      <div className="AI-Algorithm">
+        {randomResult && getBoardFromResult(randomResult)}
+        {randomResult && <AlgorithmPanel algorithm="Random Guessing (BogoWordle)">
+          An algorithm that simply guesses random words without learning anything. Not AI.
+        </AlgorithmPanel>}
+      </div>
+      {}
     </div>
   );
 }

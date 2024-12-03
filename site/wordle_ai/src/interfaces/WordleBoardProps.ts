@@ -6,4 +6,6 @@ export default interface WordleBoardProps {
   currentGuess: string;
   letters: number;
   maxGuesses: number;
+  displayOnly?: boolean;
+  showOnlyGuessedRows?: boolean;
 }

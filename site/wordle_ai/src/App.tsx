@@ -33,7 +33,6 @@ function App() {
   );
 }
 
-
 function WordleGameContainer() {
   const [answer, setAnswer] = useState<string>("APPLE");
 

@@ -145,7 +145,8 @@ export default function WordleSolver(props: WordleSolverProps) {
           const newTable = table;
           console.log(row, column);
           newTable[row][column] = {...table[row][column], letter: "_"};
-          return newTable;
+          console.log(newTable[row]);
+          return [...newTable];
         });
         console.log(column > 0 ? column - 1 : column);
         return newColumn;
@@ -262,18 +263,20 @@ export default function WordleSolver(props: WordleSolverProps) {
     <div className="WordleSolverBoard">
       {letterBoxes.map((row: LetterBoxEnterProps[], rowIndex: number) => {
         return (
-          <div key={rowIndex}>
+          <div key={rowIndex} className="Row">
             {rowIndex < activeRows ? <RowRemoveButton onClick={handleRemoveRow} rowIndex={rowIndex} /> : null}
-            {row.map((cell: LetterBoxEnterProps, colIndex: number) => {
-              return (
-                <LetterBoxEnter
-                  key={colIndex}
-                  {...cell}
-                  selected={rowIndex === selectedRow && colIndex === selectedColumn}
-                  onClick={() => handleClick(rowIndex, colIndex)}  
-                />
-              );
-            })}
+            <div className="LetterBoxRow">
+              {row.map((cell: LetterBoxEnterProps, colIndex: number) => {
+                return (
+                  <LetterBoxEnter
+                    key={colIndex}
+                    {...cell}
+                    selected={rowIndex === selectedRow && colIndex === selectedColumn}
+                    onClick={() => handleClick(rowIndex, colIndex)}  
+                  />
+                );
+              })}
+            </div>
           </div>
         )
       })}
