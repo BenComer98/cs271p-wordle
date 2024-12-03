@@ -37,7 +37,6 @@ export default function BeatTheBot() {
   }
 
   const handleFinishGame = (board: LetterBoxProps[][]) => {
-    console.log(board);
     setUserResults((results: LetterBoxProps[][]) => {
       setGameEndPopup({
         title: "How did you do?",

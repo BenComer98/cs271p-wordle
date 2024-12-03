@@ -54,7 +54,6 @@ export default function WordleSolver(props: WordleSolverProps) {
   }
 
   const updateStatusesToActive = (active: number, rowIndex: number) => {
-    console.log("updating with active=", active);
     setLetterBoxes((prevTable: LetterBoxEnterProps[][]) => {
       const newTable = prevTable.map((row: LetterBoxEnterProps[], index: number) => {
         return row.map((cell: LetterBoxEnterProps) => {
@@ -143,12 +142,9 @@ export default function WordleSolver(props: WordleSolverProps) {
         const newColumn = column > 0 ? column - 1 : column;
         setLetterBoxes((table: LetterBoxEnterProps[][]) => {
           const newTable = table;
-          console.log(row, column);
           newTable[row][column] = {...table[row][column], letter: "_"};
-          console.log(newTable[row]);
           return [...newTable];
         });
-        console.log(column > 0 ? column - 1 : column);
         return newColumn;
       });
 
@@ -204,7 +200,6 @@ export default function WordleSolver(props: WordleSolverProps) {
         handleType(key.toUpperCase());
       }
       else if (key === "Backspace") {
-        console.log("Backspacing");
         handleBackspace();
       }
       else if (key === "Enter") {
@@ -245,7 +240,6 @@ export default function WordleSolver(props: WordleSolverProps) {
       }
     })
     
-    console.log(suggestOptimalGuess(algorithm, letterBoxes));
     return suggestOptimalGuess(algorithm, letterBoxes);
   }
 

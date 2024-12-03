@@ -61,14 +61,12 @@ export default function WordleGame(props: WordleGameProps) {
   }
 
   const handleType = (letter: string) => {
-    console.log("Entered " + letter);
     if (gameStatus === GameStatus.Playing && isAlpha(letter) && currentGuess.length < answer.length) {
       setCurrentGuess(currentGuess.concat(letter.toUpperCase()));
     }
   };
 
   const handleBackspace = () => {
-    console.log("Backspacing");
     if (currentGuess.length > 0) {
       setCurrentGuess(currentGuess.slice(0, -1));
     }
@@ -141,11 +139,10 @@ export default function WordleGame(props: WordleGameProps) {
     else {
       setAnswer(props.answer);
     }
-  }, []);
+  }, [props.answer]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      console.log(event);
       const key = event.key;
       if (isAlpha(key)) {
         handleType(key.toUpperCase());

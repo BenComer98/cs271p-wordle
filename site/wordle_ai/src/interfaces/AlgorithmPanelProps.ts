@@ -1,4 +1,4 @@
-import { PropsWithChildren, ReactNode } from "react";
+import { PropsWithChildren } from "react";
 
 export default interface AlgorithmPanelProps extends PropsWithChildren {
   algorithm: string;

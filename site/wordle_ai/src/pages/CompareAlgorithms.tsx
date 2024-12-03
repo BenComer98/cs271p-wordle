@@ -58,8 +58,11 @@ export default function CompareAlgorithms() {
     handleClick();
   }
 
+  const handleClickRun = () => {
+    handleClick();
+  }
+
   const getBoardFromResult = (result: LetterBoxProps[][] | null) => {
-    console.log(result);
     if (!result || result.length === 0) return null;
     return (
       <WordleBoard
@@ -84,6 +87,21 @@ export default function CompareAlgorithms() {
     )
   }
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const key = event.key;
+      if (key === "Enter") {
+        handleClickRun();
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="Page">
       <div className="Prompt">
@@ -93,6 +111,9 @@ export default function CompareAlgorithms() {
         <UserInput value={word} handleChange={handleChangeInput}/>
         <Button onClick={handleClickRandom}>
           Random
+        </Button>
+        <Button onClick={handleClickRun}>
+          Submit
         </Button>
       </div>
       {showInvalidWord && (<div className="ShowInvalidWord">
