@@ -1,7 +1,6 @@
 import { LetterBoxStatus } from "../enums/LetterBoxStatus";
 import WordleBoardProps from "../interfaces/WordleBoardProps";
 import LetterBoxRow from "./LetterBoxRow";
-import "./styles/WordleBoard.css";
 
 export default function WordleBoard(props: WordleBoardProps) {
   return (
@@ -14,13 +13,13 @@ export default function WordleBoard(props: WordleBoardProps) {
           letters={props.letters}
         />
       })}
-      <LetterBoxRow
+      {!props.showOnlyGuessedRows && <LetterBoxRow
         key={props.guesses.length}
         guess={props.currentGuess}
         feedback={Array<LetterBoxStatus>(props.letters).fill(LetterBoxStatus.Ready)}
         letters={props.letters}
-      />
-      {Array.from({length: props.maxGuesses - props.guesses.length - 1}).map((_, rowIndex) => {
+      />}
+      {!props.displayOnly && Array.from({length: props.maxGuesses - props.guesses.length - 1}).map((_, rowIndex) => {
         return <LetterBoxRow
           key={rowIndex}
           guess={"_".repeat(props.letters)}

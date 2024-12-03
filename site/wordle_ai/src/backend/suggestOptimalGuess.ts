@@ -1,10 +1,17 @@
 import { Algorithm } from "../enums/Algorithm";
 import LetterBoxEnterProps from "../interfaces/LetterBoxEnterProps";
+import getRandomWord from "./getRandomWord";
 
-export default function suggestOptimalGuess(
+export default async function suggestOptimalGuess(
   algorithm: Algorithm,
   board: LetterBoxEnterProps[][]
-): string {
+): Promise<string> {
   console.log("Running " + algorithm);
-  return "APPLE";
+  switch(algorithm) {
+    case Algorithm.RandomGuess:
+      return await getRandomWord();
+    // Add your Algorithm's call here!
+    default:
+      return "APPLE";
+  }
 }
