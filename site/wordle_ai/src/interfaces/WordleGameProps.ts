@@ -4,5 +4,5 @@ import LetterBoxProps from "./LetterBoxProps";
 export default interface WordleGameProps {
   answer?: string;
   popup?: GameEndPopupProps;
-  setFinalBoard?: (board: LetterBoxProps[][]) => void;
+  setFinalBoard?: (board: LetterBoxProps[][], won: boolean) => void;
 }
