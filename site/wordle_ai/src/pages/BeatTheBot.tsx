@@ -8,15 +8,16 @@ import getRandomWord from "../backend/getRandomWord";
 import LetterBoxProps from "../interfaces/LetterBoxProps";
 import runAlgorithm from "../backend/runAlgorithm";
 import { GameStatus } from "../enums/GameStatus";
-import Popup from "../generics/Popup";
 import PopupProps from "../interfaces/PopupProps";
+import WordleBoard from "../generics/WordleBoard";
+import Popup from "../generics/Popup";
+import "./styles/BeatTheBot.css";
 
 export default function BeatTheBot() {
   const [algorithm, setAlgorithm] = useState(Algorithm.NoneSelected)
   const [gameStatus, setGameStatus] = useState(GameStatus.Ready);
   const [answer, setAnswer] = useState<string>("");
   const [aiResults, setAiResults] = useState<LetterBoxProps[][]>([]);
-  const [userResults, setUserResults] = useState<LetterBoxProps[][]>([]);
   const [gameEndPopup, setGameEndPopup] = useState<PopupProps>({});
   const dropdownOptions: DropdownProps = {
     handleChange: (alg: Algorithm) => {setAlgorithm(alg)},
@@ -36,18 +37,60 @@ export default function BeatTheBot() {
     }
   }
 
-  const handleFinishGame = (board: LetterBoxProps[][]) => {
-    setUserResults((results: LetterBoxProps[][]) => {
-      setGameEndPopup({
-        title: "How did you do?",
-        content: <div>
-          Hello World!
+  const handleFinishGame = async (board: LetterBoxProps[][], won: boolean) => {
+    const popup = {
+      title: "How did you do?",
+      content: <div className="ComparisonPanel">
+        <div>
+          Your Board:
+          <WordleBoard
+            guesses={board.map((guess: LetterBoxProps[]) => {
+              return guess.map((letterBox: LetterBoxProps) => {
+                return letterBox.letter;
+              }).join("");
+            })}
+          
+            feedback={board.map((guess: LetterBoxProps[]) => {
+              return guess.map((letterBox: LetterBoxProps) => {
+                return letterBox.status;
+              });
+            })}
+          
+            currentGuess={""}
+            letters={5}
+            maxGuesses={6}
+            displayOnly={true}
+            showOnlyGuessedRows={true}
+          />
         </div>
-      });
-      return board;
-    });
-  };
+        <div>
+          AI Results:
+          <WordleBoard
+            guesses={aiResults.map((guess: LetterBoxProps[]) => {
+              return guess.map((letterBox: LetterBoxProps) => {
+                return letterBox.letter;
+              }).join("");
+            })}
 
+            feedback={aiResults.map((guess: LetterBoxProps[]) => {
+              return guess.map((letterBox: LetterBoxProps) => {
+                return letterBox.status;
+              });
+            })}
+          
+            currentGuess={""}
+            letters={5}
+            maxGuesses={6}
+            displayOnly={true}
+            showOnlyGuessedRows={true}
+          />
+        </div>
+      </div>
+    }
+    setGameEndPopup(popup);
+    setGameStatus(won ? GameStatus.Won : GameStatus.Lost);
+  };
+  
   return (
     <div>
       {gameStatus === GameStatus.Ready && (
@@ -59,10 +102,10 @@ export default function BeatTheBot() {
         </div>
       )}
       {gameStatus === GameStatus.Playing && (
-        <WordleGame answer={answer} setFinalBoard={handleFinishGame}/>
+        <WordleGame answer={answer} setFinalBoard={handleFinishGame} />
       )}
       {(gameStatus === GameStatus.Won || gameStatus === GameStatus.Lost) && (
-        <Popup {...gameEndPopup}/>
+        <Popup {...gameEndPopup} />
       )}
     </div>
   )
