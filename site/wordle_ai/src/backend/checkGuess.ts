@@ -1,15 +1,35 @@
 import { LetterBoxStatus } from "../enums/LetterBoxStatus";
+import axios, { AxiosResponse } from "axios";
+import CheckGuessResponse from "../interfaces/api/CheckGuessResponse";
 
-export default function checkGuess(guess: string, answer: string): LetterBoxStatus[] {
-  let feedback = [];
-  for (let i = 0; i < guess.length; ++i) {
-    if (guess[i] === answer[i]) {
-      feedback.push(LetterBoxStatus.Aligned);
+export default async function checkGuess(guess: string, answer: string): Promise<LetterBoxStatus[]> {
+  let feedback: LetterBoxStatus[] = Array(5).fill(LetterBoxStatus.Incorrect);
+  await axios.post("http://127.0.0.1:5000/getFeedback", {
+    guess,
+    answer
+  }).then((response: AxiosResponse<CheckGuessResponse>) => {
+    const responseData = response.data;
+    if (responseData.error) {
+      console.error(responseData.error);
+    }
+    else if (!responseData.feedback) {
+      console.error("No feedback returned. Check your API!");
     }
     else {
-      feedback.push(LetterBoxStatus.Incorrect);
+      feedback = responseData.feedback.map((letterFeedback: string) => {
+        switch (letterFeedback) {
+          case 'green':
+            return LetterBoxStatus.Aligned;
+          case 'yellow':
+            return LetterBoxStatus.Misaligned;
+          case 'gray':
+            return LetterBoxStatus.Incorrect;
+          default:
+            return LetterBoxStatus.Ready;
+        }
+      });
     }
-  }
+  });
 
   return feedback;
 }
