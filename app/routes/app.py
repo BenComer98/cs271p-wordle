@@ -63,14 +63,21 @@ def get_best_guess_endpoint():
 
 
 def get_feedback(guess, target):
-    feedback = []
-    for i, letter in enumerate(guess):
-        if letter == target[i]:
-            feedback.append('green')
-        elif letter in target:
-            feedback.append('yellow')
+    counts = [0] * 26
+    feedback = ['gray'] * 5
+    
+    for i in range(5):
+        if guess[i] == target[i]:
+            feedback[i] = 'green'
         else:
-            feedback.append('gray')
+            counts[ord(target[i]) - ord('A')] += 1
+    
+    for i in range(5):
+        if feedback[i] == 'gray':
+            if counts[ord(guess[i]) - ord('A')] > 0:
+                feedback[i] = 'yellow'
+            counts[ord(guess[i]) - ord('A')] -= 1
+
     return feedback
 
 def run_app():
