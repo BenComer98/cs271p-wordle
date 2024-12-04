@@ -3,5 +3,6 @@ export enum LetterBoxStatus {
   Ready='r',
   Incorrect='i',
   Misaligned='m',
-  Aligned='a'
+  Aligned='a',
+  InvalidWord='v'
 };
