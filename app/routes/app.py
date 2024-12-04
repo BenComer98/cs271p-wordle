@@ -61,6 +61,21 @@ def get_best_guess_endpoint():
     best_guess = WordleCSPNextBest(target_word).suggest_next_word(word_lists, feedbacks)
     return jsonify({"best_guess": best_guess})
 
+@app.route('/getFeedback', methods=['POST'])
+def get_feedback_endpoint():
+    data = request.json
+    if not data or 'guess' not in data or 'answer' not in data:
+        return jsonify({"error": "Missing 'guess' or 'answer' parameter"}), 400
+    
+    guess = data['guess']
+    answer = data['answer']
+    
+    if not isinstance(guess, str) or not guess.strip():
+        return jsonify({"error": "'guess' must be a non-empty string"}), 400
+    if not isinstance(answer, str) or not answer.strip():
+        return jsonify({"error": "'answer' must be a non-empty string"}), 400
+
+    return jsonify({"feedback": get_feedback(guess, answer)})
 
 def get_feedback(guess, target):
     counts = [0] * 26

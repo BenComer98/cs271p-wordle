@@ -80,10 +80,10 @@ export default function WordleGame(props: WordleGameProps) {
     }
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (currentGuess.length !== answer.length || gameStatus !== GameStatus.Playing) return;
 
-    const guessFeedback = checkGuess(currentGuess, answer);
+    const guessFeedback = await checkGuess(currentGuess, answer);
     const newFeedback = [...feedback, guessFeedback];
     setFeedback(newFeedback);
     const newGuesses = [...guesses, currentGuess];
