@@ -14,7 +14,8 @@ import Popup from "../generics/Popup";
 import "./styles/BeatTheBot.css";
 
 export default function BeatTheBot() {
-  const [algorithm, setAlgorithm] = useState(Algorithm.NoneSelected)
+  const [algorithm, setAlgorithm] = useState(Algorithm.NoneSelected);
+  const [showNoAlgorithmSelected, setShowNoAlgorithmSelected] = useState(false);
   const [gameStatus, setGameStatus] = useState(GameStatus.Ready);
   const [answer, setAnswer] = useState<string>("");
   const [aiResults, setAiResults] = useState<LetterBoxProps[][]>([]);
@@ -31,9 +32,17 @@ export default function BeatTheBot() {
 
   const handleStartPlaying: MouseEventHandler<HTMLButtonElement> = async (event: React.MouseEvent<HTMLButtonElement>) => {
     if (algorithm !== Algorithm.NoneSelected) {
-      setAnswer(await getRandomWord());
-      setAiResults(await runAlgorithm(algorithm, answer));
-      setGameStatus(GameStatus.Playing);
+      setShowNoAlgorithmSelected(false);
+      getRandomWord().then((word: string) => {
+        setAnswer(word);
+        setGameStatus(GameStatus.Playing);
+        runAlgorithm(algorithm, word).then((board: LetterBoxProps[][]) => {
+          setAiResults(board);
+        });
+      });
+    }
+    else {
+      setShowNoAlgorithmSelected(true);
     }
   }
 
@@ -95,7 +104,14 @@ export default function BeatTheBot() {
     <div>
       {gameStatus === GameStatus.Ready && (
         <div>
-          <Dropdown {...dropdownOptions} />
+          <div>
+            <Dropdown {...dropdownOptions} />
+            {showNoAlgorithmSelected && (
+              <div className="NoAlgorithmError">
+                Please select an algorithm!
+              </div>
+            )}
+          </div>
           <Button onClick={handleStartPlaying}>
             Play Against this Algorithm!
           </Button>

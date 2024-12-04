@@ -7,17 +7,17 @@ export default async function runGuessRandom(target: string): Promise<LetterBoxP
   let results: LetterBoxProps[][] = [];
   for (let i = 0; i < 6; ++i) {
     const guess = await getRandomWord();
-    const feedback = await checkGuess(guess, target);
-    results.push(guess.split("").map((letter: string, index: number) => {
-      return {
-        key: index,
-        letter,
-        status: feedback[index]
-      }
-    }));
-    if (feedback === Array(5).fill(LetterBoxStatus.Aligned)) {
-      return results;
-    }
+    await checkGuess(guess, target)
+      .then((feedback: LetterBoxStatus[]) => {
+        results.push(guess.split("").map((letter: string, index: number) => {
+          return {
+            key: index,
+            letter,
+            status: feedback[index]
+          }
+        }));
+      });
+    
   }
   return results;
 }

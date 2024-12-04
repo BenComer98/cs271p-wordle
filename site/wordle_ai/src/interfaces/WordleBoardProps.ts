@@ -8,4 +8,5 @@ export default interface WordleBoardProps {
   maxGuesses: number;
   displayOnly?: boolean;
   showOnlyGuessedRows?: boolean;
+  invalidCurrent?: boolean;
 }

@@ -16,6 +16,7 @@ import Button from "../generics/Button";
 import MainMenuButton from "../generics/MainMenuButton";
 import LetterBoxProps from "../interfaces/LetterBoxProps";
 import assert from "assert";
+import isValidWord from "../backend/isValidWord";
 
 export default function WordleGame(props: WordleGameProps) {
   const [answer, setAnswer] = useState<string>("");
@@ -23,6 +24,7 @@ export default function WordleGame(props: WordleGameProps) {
   const [guesses, setGuesses] = useState(new Array<string>(0));
   const [gameStatus, setGameStatus] = useState(GameStatus.Playing);
   const [feedback, setFeedback] = useState(new Array<LetterBoxStatus[]>(0));
+  const [invalidWord, setInvalidWord] = useState(false);
   const [row, setRow] = useState(1);
   const [afterGamePopup, setAfterGamePopup] = useState<PopupProps>({});
   const maxGuesses = 6;
@@ -78,10 +80,20 @@ export default function WordleGame(props: WordleGameProps) {
     if (currentGuess.length > 0) {
       setCurrentGuess(currentGuess.slice(0, -1));
     }
+    setInvalidWord(false);
   }
 
   const handleSubmit = async () => {
     if (currentGuess.length !== answer.length || gameStatus !== GameStatus.Playing) return;
+
+    let valid;
+    await isValidWord(currentGuess).then((isValid: boolean) => {
+      valid = isValid;
+    })
+    if (!valid) {
+      setInvalidWord(true);
+      return;
+    }
 
     const guessFeedback = await checkGuess(currentGuess, answer);
     const newFeedback = [...feedback, guessFeedback];
@@ -177,7 +189,8 @@ export default function WordleGame(props: WordleGameProps) {
     feedback,
     currentGuess,
     letters: answer.length,
-    maxGuesses
+    maxGuesses,
+    invalidCurrent: invalidWord
   };
 
   const keyboardProps: KeyboardProps = {

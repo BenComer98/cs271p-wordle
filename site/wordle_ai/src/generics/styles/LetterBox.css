@@ -35,3 +35,8 @@
   background-color:rgb(146, 255, 103);
   color: black;
 }
+
+[status='v'] {
+  background-color: rgb(255, 198, 198);
+  color: black;
+}
