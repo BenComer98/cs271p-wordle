@@ -1,6 +1,8 @@
 import { Algorithm } from "../enums/Algorithm";
 import runGuessRandom from "../hooks/runGuessRandom";
 import LetterBoxProps from "../interfaces/LetterBoxProps";
+import axios, { AxiosResponse } from "axios";
+import getHost from "./getHost";
 
 export default async function runAlgorithm(algorithm: Algorithm, target: string): Promise<LetterBoxProps[][]> {
   switch (algorithm) {
