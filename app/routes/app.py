@@ -32,8 +32,6 @@ def check_word_in_list(word):
         return jsonify({"error": "No word provided"}), 400
 
     is_present = word.lower() in word_list
-    print(word)
-    print(is_present)
     return jsonify({"word": word, "is_present": is_present})
 
 @app.route('/csp/<initial_word>/<target_word>', methods=['GET'])
