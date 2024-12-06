@@ -6,7 +6,7 @@ FILE_NAME = 'wordlist.csv'
 
 
 class WordleEnv:
-    def __init__(self, word_length=5, max_attempts=6):
+    def __init__(self, word_length=5, max_attempts=5):
         self.word_length = word_length
         self.max_attempts = max_attempts
         self.target = ''
@@ -25,7 +25,6 @@ class WordleEnv:
 
         self.state_size = 78
         self.action_size = len(self.word_list)
-        # self.available_actions = [list(range(self.action_size))]
         self.available_actions = list(range(self.action_size))
 
         self.current_state = np.zeros(self.state_size, dtype=np.float32)
@@ -38,6 +37,7 @@ class WordleEnv:
 
     def get_state(self):
         state = self.current_state
+        print(f"Current guess from get state word set to: {self.current_guess}")
         for idx, letter in enumerate(self.current_guess):
             letter = letter.upper()
             if letter == self.target[idx]:
@@ -46,7 +46,6 @@ class WordleEnv:
                 state[(ord(letter) - 65) + 26] = 1
             else:
                 state[(ord(letter) - 65) + 26 * 2] = 1
-        # print(f"shape from get state: {state.shape}")
         return state
 
     def compute_reward(self,current_guess, target, attempts_left):
@@ -68,9 +67,15 @@ class WordleEnv:
         return reward, done
 
     def step(self, action):
-        self.current_guess = self.word_list[action]
-        self.guesses.append(self.current_guess)# Ensure the action is removed from the list
+        if not self.guesses:  # If this is the first guess
+            self.current_guess = self.current_guess  # Use the guess set in reset
+        else:
+            self.current_guess = self.word_list[action].upper()
+        print(f"Step method - Current Guess: {self.current_guess}, Target: {self.target}")
+        # self.guesses.append(self.current_guess)# Ensure the action is removed from the list
         self.remove_action(action)
+        if self.current_guess not in self.guesses:
+            self.guesses.append(self.current_guess)
         self.attempts += 1
 
         # Calculate the reward and done flag using the compute_reward function
@@ -86,53 +91,69 @@ class WordleEnv:
         return self.get_state(), reward, done, {}
 
 
-
     def remove_incompatible_words(self, current_guess):
+        print(f"Removing incompatible words for guess: {current_guess}")
         new_available_actions = []
-        for i in self.available_actions:
-            word = self.word_list[i]
-            compatible = True
+        removed_count = 0
+        reasons = {
+            "incorrect_position": 0,
+            "contains_eliminated": 0,
+            "other": 0
+        }
 
-            matched_letters = [False] * len(self.target)
+        for i in self.available_actions:
+            word = self.word_list[i].upper()
+            compatible = True
+            reason = ""
 
             for idx, (guess_char, target_char) in enumerate(zip(current_guess, self.target)):
                 if guess_char == target_char:
                     if word[idx] != guess_char:
                         compatible = False
+                        reason = "incorrect_position"
                         break
-                    matched_letters[idx] = True
-
-            if compatible:
-                for idx, guess_char in enumerate(current_guess):
-                    if guess_char in self.target:
-                        if word[idx] == guess_char and not matched_letters[idx]:
-                            compatible = False
-                            break
-                        target_count = self.target.count(guess_char)
-                        word_count = word.count(guess_char)
-                        if word_count > target_count:
-                            compatible = False
-                            break
+                elif guess_char in self.target:
+                    if word[idx] == guess_char:
+                        compatible = False
+                        reason = "incorrect_position"
+                        break
+                else:
+                    if guess_char in word:
+                        compatible = False
+                        reason = "contains_eliminated"
+                        break
 
             if compatible:
                 new_available_actions.append(i)
-        print(f"Before: {len(self.available_actions)} actions, After: {len(new_available_actions)} actions")
+            else:
+                removed_count += 1
+                reasons[reason] += 1
+
         if len(new_available_actions) > 0:
             self.available_actions = new_available_actions
+        else:
+            print("Warning: No compatible words left. Keeping all words.")
 
-    def reset(self,target_word=None, start_word=None):
+        return new_available_actions
+    def reset(self,target_word=None, start_word=None,max_attempts=None):
         self.target = target_word.upper() if target_word else random.choice(self.word_list).upper()
-        self.attempts_left = self.max_attempts
+        self.attempts_left = max_attempts if max_attempts else self.max_attempts
         self.attempts = 0
         self.guesses = []
-        self.current_guess = start_word.upper() if start_word else '_' * self.word_length
         self.available_actions = list(range(self.action_size))
         self.current_state = np.zeros(self.state_size, dtype=np.float32)
+
         if start_word:
             action = self.word_list.index(start_word.lower())
-            self.step(action)
-
-        return self.current_state
+            self.current_guess = start_word.upper()
+            self.guesses.append(self.current_guess)
+            self.remove_action(action)
+            self.remove_incompatible_words(self.current_guess)
+        else:
+            self.current_guess = '_' * self.word_length
+        print(f"Target word set to: {self.target}")
+        print(f"Started : {self.current_guess}")
+        return self.get_state()
 
     def show(self):
         print(f"Current guess: {self.current_guess}")
