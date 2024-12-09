@@ -21,9 +21,10 @@ export default function CompareAlgorithms() {
   const [randomResult, setRandomResult] = useState<LetterBoxProps[][] | null>(null);
 
   const setWordAsync = async () => {
-    const newWord = await getRandomWord();
-    setWord(newWord);
-    return newWord;
+    return await getRandomWord().then((newWord: string) => {
+      setWord(newWord);
+      return newWord;
+    });
   }
 
   const runAlgorithms = async (word: string) => {
@@ -37,10 +38,10 @@ export default function CompareAlgorithms() {
   }, []);
 
   const handleSubmit = async (answer: string) => {
-    if (word.length === 5) {
+    if (answer.length === 5) {
       if (await isValidWord(word)) {
         setShowInvalidWord(false);
-        runAlgorithms(word);
+        runAlgorithms(answer);
       }
       else {
         setShowInvalidWord(true);
@@ -56,10 +57,12 @@ export default function CompareAlgorithms() {
   }
 
   const handleClickRandom = async () => {
-    const answer = await setWordAsync();
-    debug(answer);
+    await setWordAsync().then((answer: string) => {
+      debug(answer);
+      handleSubmit(answer);
+      setWord(answer);
+    });
     setShowInvalidWord(false);
-    handleSubmit(answer);
   }
 
   const handleClickRun = () => {
