@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { LetterBoxStatus } from "../enums/LetterBoxStatus";
 import LetterBoxEnter from "../generics/LetterBoxEnter";
 import WordleSolverProps from "../interfaces/WordleSolverProps";
+import "../generics/styles/BackHomeButton.css";
 import "./styles/WordleSolver.css";
 import LetterBoxEnterProps from "../interfaces/LetterBoxEnterProps";
 import Keyboard from "../generics/Keyboard";
@@ -14,6 +15,7 @@ import { Algorithm } from "../enums/Algorithm";
 import isValidWord from "../backend/isValidWord";
 import containsBlank from "../hooks/containsBlank";
 import isDirectionKey from "../hooks/isDirectionKey";
+import BackHomeButton from "../generics/BackHomeButton";
 
 export default function WordleSolver(props: WordleSolverProps) {
   const getEmptyBoard = () => {
@@ -254,6 +256,9 @@ export default function WordleSolver(props: WordleSolverProps) {
   ]
 
   return <div className="WordleSolver">
+    <div className="BackHomeButton">
+        <BackHomeButton />
+      </div>
     <div className="WordleSolverBoard">
       {letterBoxes.map((row: LetterBoxEnterProps[], rowIndex: number) => {
         return (

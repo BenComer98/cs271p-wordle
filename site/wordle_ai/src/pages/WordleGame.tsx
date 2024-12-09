@@ -8,6 +8,7 @@ import WordleBoard from "../generics/WordleBoard";
 import WordleBoardProps from "../interfaces/WordleBoardProps";
 import Keyboard from "../generics/Keyboard";
 import KeyboardProps from "../interfaces/KeyboardProps";
+import "../generics/styles/BackHomeButton.css";
 import "./styles/WordleGame.css";
 import getRandomWord from "../backend/getRandomWord";
 import Popup from "../generics/Popup";
@@ -15,8 +16,8 @@ import PopupProps from "../interfaces/PopupProps";
 import Button from "../generics/Button";
 import MainMenuButton from "../generics/MainMenuButton";
 import LetterBoxProps from "../interfaces/LetterBoxProps";
-import assert from "assert";
 import isValidWord from "../backend/isValidWord";
+import BackHomeButton from "../generics/BackHomeButton";
 
 export default function WordleGame(props: WordleGameProps) {
   const [answer, setAnswer] = useState<string>("");
@@ -201,6 +202,9 @@ export default function WordleGame(props: WordleGameProps) {
 
   return (
     <div> 
+      <div className="BackHomeButton">
+        <BackHomeButton />
+      </div>
       {gameStatus === GameStatus.Playing && 
         <div className="WordleGame">
           <div className="Board">
