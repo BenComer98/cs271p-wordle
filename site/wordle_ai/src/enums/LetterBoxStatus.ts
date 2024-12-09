@@ -4,5 +4,6 @@ export enum LetterBoxStatus {
   Incorrect='i',
   Misaligned='m',
   Aligned='a',
-  InvalidWord='v'
+  InvalidWord='v',
+  Suggestion='s'
 };

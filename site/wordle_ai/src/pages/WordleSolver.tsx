@@ -12,14 +12,14 @@ import Dropdown from "../generics/Dropdown";
 import RunAlgorithmButton from "../generics/RunAlgorithmButton";
 import suggestOptimalGuess from "../backend/suggestOptimalGuess";
 import { Algorithm } from "../enums/Algorithm";
-import isValidWord from "../backend/isValidWord";
 import containsBlank from "../hooks/containsBlank";
 import isDirectionKey from "../hooks/isDirectionKey";
 import BackHomeButton from "../generics/BackHomeButton";
+import debug from "../debug/debug";
 
 export default function WordleSolver(props: WordleSolverProps) {
   const getEmptyBoard = () => {
-    return Array.from({length: 6}, (_, rowIndex) =>
+    return Array.from({length: 5}, (_, rowIndex) =>
       Array.from({length: 5}, (_, colIndex) =>
         ({
           letter: "_",
@@ -36,6 +36,10 @@ export default function WordleSolver(props: WordleSolverProps) {
   const [letterBoxes, setLetterBoxes] = useState<LetterBoxEnterProps[][]>(
     getEmptyBoard()
   );
+  const [showIncompleteWord, setShowIncompleteWord] = useState(false);
+  const [showMissingWord, setShowMissingWord] = useState(false);
+  const [showSelectAlgorithm, setShowSelectAlgorithm] = useState(false);
+  const [optimalGuess, setOptimalGuess] = useState("_____");
 
   const makeRangeOfRowsEmpty = (startRow: number, endRow: number) => {
     setLetterBoxes((letterBoxes: LetterBoxEnterProps[][]) => {
@@ -55,7 +59,7 @@ export default function WordleSolver(props: WordleSolverProps) {
     })
   }
 
-  const updateStatusesToActive = (active: number, rowIndex: number) => {
+  const updateStatusesToActive = (rowIndex: number) => {
     setLetterBoxes((prevTable: LetterBoxEnterProps[][]) => {
       const newTable = prevTable.map((row: LetterBoxEnterProps[], index: number) => {
         return row.map((cell: LetterBoxEnterProps) => {
@@ -85,11 +89,10 @@ export default function WordleSolver(props: WordleSolverProps) {
   
           return newTable;
         });
-        return active + 1;
+        return rowIndex+1;
       }
       return active;
-    })
-    
+    });
 
     if (rowIndex >= activeRows) {
       setSelectedRow(rowIndex); setSelectedColumn(0);
@@ -102,6 +105,11 @@ export default function WordleSolver(props: WordleSolverProps) {
     
     setLetterBoxes((table: LetterBoxEnterProps[][]) => {
       switch (table[rowIndex][colIndex].status) {
+        case LetterBoxStatus.Suggestion:
+          table[rowIndex][colIndex] = {...table[rowIndex][colIndex], status: LetterBoxStatus.Aligned};
+          break;
+        case LetterBoxStatus.InvalidWord:
+          break;
         case LetterBoxStatus.Incorrect:
           table[rowIndex][colIndex] = {...table[rowIndex][colIndex], status: LetterBoxStatus.Aligned};
           break;
@@ -125,7 +133,8 @@ export default function WordleSolver(props: WordleSolverProps) {
         setSelectedRow((prevRow) => {
           newTable[prevRow][prevCol] = {
             ...newTable[prevRow][prevCol],
-            letter
+            letter,
+            status: newTable[prevRow][prevCol].status === LetterBoxStatus.InvalidWord ? LetterBoxStatus.Incorrect : newTable[prevRow][prevCol].status
           };
   
           return prevRow; // Row remains unchanged
@@ -144,7 +153,9 @@ export default function WordleSolver(props: WordleSolverProps) {
         const newColumn = column > 0 ? column - 1 : column;
         setLetterBoxes((table: LetterBoxEnterProps[][]) => {
           const newTable = table;
-          newTable[row][column] = {...table[row][column], letter: "_"};
+          const currStatus = table[row][column].status;
+          const newStatus = currStatus === LetterBoxStatus.InvalidWord ? LetterBoxStatus.Incorrect : currStatus;
+          newTable[row][column] = {...table[row][column], letter: "_", status: newStatus};
           return [...newTable];
         });
         return newColumn;
@@ -176,7 +187,7 @@ export default function WordleSolver(props: WordleSolverProps) {
           const rowIndex_ = rowIndex === 5 ? 5 : rowIndex + 1;
           setActiveRows((active: number) => {
             const active_ = rowIndex + 1 < active || active === 6 ? active : active + 1;
-            updateStatusesToActive(active_, rowIndex+1);
+            updateStatusesToActive(rowIndex+1);
             return active_;
           })
           return rowIndex_;
@@ -210,6 +221,9 @@ export default function WordleSolver(props: WordleSolverProps) {
       else if (isDirectionKey(key)) {
         handleDirectionKey(key);
       }
+
+      setShowIncompleteWord(false);
+      setShowMissingWord(false);
     }
 
     window.addEventListener("keydown", handleKeyDown);
@@ -220,7 +234,7 @@ export default function WordleSolver(props: WordleSolverProps) {
   }, []);
 
   const handleRemoveRow = (rowIndex: number) => {
-    setActiveRows((activeRows: number) => {
+    setActiveRows((_: number) => {
       if (rowIndex === 0) {
         /* Add popup? */
         setLetterBoxes(getEmptyBoard());
@@ -232,21 +246,54 @@ export default function WordleSolver(props: WordleSolverProps) {
       }
     });
     setSelectedRow(rowIndex === 0 ? rowIndex : rowIndex-1);
+    setShowMissingWord(false);
   }
 
-  const handleRunAlgorithm = () => {
+  const handleRunAlgorithm = async () => {
+    let validBoard = true;
     // Verify input is valid
-    letterBoxes.forEach((row: LetterBoxEnterProps[], rowIndex: number) => {
-      if (rowIndex < activeRows && (containsBlank(row.join("")) || !isValidWord(row.join("")))) {
-        return; // Mark as bad input! TODO
+    const newBoxes = letterBoxes.map((row: LetterBoxEnterProps[], rowIndex: number) => {
+      if (rowIndex < activeRows) {
+        const rowWord = row.map((box: LetterBoxEnterProps) => {
+          return box.letter;
+        }).join("");
+        debug(rowWord);
+        let newRow = row;
+        if (rowWord === "_____") {
+          if (rowIndex !== 0) {
+            setShowMissingWord(true);
+            newRow = newRow.map((letter: LetterBoxEnterProps) => {
+              return {...letter, status: letter.letter === "_" ? LetterBoxStatus.InvalidWord : letter.status};
+            });
+            validBoard = false;
+          }
+        }
+        else if (containsBlank(rowWord)) {
+          setShowIncompleteWord(true);
+          newRow = newRow.map((letter: LetterBoxEnterProps) => {
+            return {...letter, status: LetterBoxStatus.InvalidWord};
+          });
+          validBoard = false;
+        }
+        return newRow;
       }
-    })
-    
-    return suggestOptimalGuess(algorithm, letterBoxes);
+      else return row;
+    });
+    if (algorithm === Algorithm.NoneSelected) {
+      setShowSelectAlgorithm(true);
+      validBoard = false;
+    }
+
+    setLetterBoxes(newBoxes);
+    if (!validBoard) return;
+
+    const optimalGuess = await suggestOptimalGuess(algorithm, newBoxes);
+    setOptimalGuess(optimalGuess);
   }
 
   const handleChooseAlgorithm = (algorithm: Algorithm) => {
     setAlgorithm(algorithm);
+    setShowSelectAlgorithm(false);
   }
 
   const options: [Algorithm, string][] = [
@@ -263,7 +310,7 @@ export default function WordleSolver(props: WordleSolverProps) {
       {letterBoxes.map((row: LetterBoxEnterProps[], rowIndex: number) => {
         return (
           <div key={rowIndex} className="Row">
-            {rowIndex < activeRows ? <RowRemoveButton onClick={handleRemoveRow} rowIndex={rowIndex} /> : null}
+            {rowIndex < activeRows && (rowIndex > 0 || row.map((box: LetterBoxEnterProps) => box.letter).join("") !== "_____") && <RowRemoveButton onClick={handleRemoveRow} rowIndex={rowIndex} />}
             <div className="LetterBoxRow">
               {row.map((cell: LetterBoxEnterProps, colIndex: number) => {
                 return (
@@ -277,12 +324,32 @@ export default function WordleSolver(props: WordleSolverProps) {
               })}
             </div>
           </div>
-        )
+        );
+      })};
+    </div>
+    <div className="WordleSolverGuess">
+      {optimalGuess.split("").map((letter: string, col_index: number) => {
+        return <LetterBoxEnter 
+          key={col_index}
+          letter={letter}
+          status={letter === "_" ? LetterBoxStatus.Disabled : LetterBoxStatus.Suggestion}
+        />
       })}
     </div>
     <div className="AI-Options">
       <Dropdown handleChange={handleChooseAlgorithm} options={options} selectedValue={algorithm}/>
       <RunAlgorithmButton onClick={handleRunAlgorithm}/>
+    </div>
+    <div className="Errors">
+      {showIncompleteWord && 
+        <div>The red-highlighted words need to be completed.</div>
+      }
+      {showMissingWord &&
+        <div>The red-highlighted rows need to either be removed or filled in.</div>
+      }
+      {showSelectAlgorithm &&
+        <div>Please select an algorithm for a word suggestion.</div>
+      }
     </div>
 
     <Keyboard 
