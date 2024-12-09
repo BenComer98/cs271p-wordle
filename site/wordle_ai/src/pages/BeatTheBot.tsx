@@ -11,7 +11,9 @@ import { GameStatus } from "../enums/GameStatus";
 import PopupProps from "../interfaces/PopupProps";
 import WordleBoard from "../generics/WordleBoard";
 import Popup from "../generics/Popup";
+import "../generics/styles/BackHomeButton.css";
 import "./styles/BeatTheBot.css";
+import BackHomeButton from "../generics/BackHomeButton";
 
 export default function BeatTheBot() {
   const [algorithm, setAlgorithm] = useState(Algorithm.NoneSelected);
@@ -102,6 +104,9 @@ export default function BeatTheBot() {
   
   return (
     <div>
+      <div className="BackHomeButton">
+        <BackHomeButton />
+      </div>
       {gameStatus === GameStatus.Ready && (
         <div>
           <div>

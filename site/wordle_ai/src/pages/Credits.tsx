@@ -1,6 +1,12 @@
+import BackHomeButton from "../generics/BackHomeButton";
+import "../generics/styles/BackHomeButton.css";
+
 export default function Credits() {
   return (
     <div>
+      <div className="BackHomeButton">
+        <BackHomeButton />
+      </div>
       <div>
         <b>Credits</b>  
       </div>
