@@ -39,6 +39,16 @@
   color: black;
 }
 
+[data-status='v'] {
+  background-color: rgb(255, 198, 198);
+  color: black;
+}
+
+[data-status='s'] {
+  background-color: rgb(200, 220, 255);
+  color: black;
+}
+
 [data-selected="true"] {
   border: 2px solid blue;
 }
