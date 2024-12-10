@@ -303,53 +303,57 @@ export default function WordleSolver(props: WordleSolverProps) {
   ]
 
   return <div className="WordleSolver">
-    <div className="BackHomeButton">
-        <BackHomeButton />
-      </div>
-    <div className="WordleSolverBoard">
-      {letterBoxes.map((row: LetterBoxEnterProps[], rowIndex: number) => {
-        return (
-          <div key={rowIndex} className="Row">
-            {rowIndex < activeRows && (rowIndex > 0 || row.map((box: LetterBoxEnterProps) => box.letter).join("") !== "_____") && <RowRemoveButton onClick={handleRemoveRow} rowIndex={rowIndex} />}
-            <div className="LetterBoxRow">
-              {row.map((cell: LetterBoxEnterProps, colIndex: number) => {
-                return (
-                  <LetterBoxEnter
-                    key={colIndex}
-                    {...cell}
-                    selected={rowIndex === selectedRow && colIndex === selectedColumn}
-                    onClick={() => handleClick(rowIndex, colIndex)}  
-                  />
-                );
-              })}
-            </div>
+    <div className="WordleSolverContent">
+      <div className="WordleBoardArea">
+        <div className="BackHomeButton">
+            <BackHomeButton />
           </div>
-        );
-      })};
-    </div>
-    <div className="WordleSolverGuess">
-      {optimalGuess.split("").map((letter: string, col_index: number) => {
-        return <LetterBoxEnter 
-          key={col_index}
-          letter={letter}
-          status={letter === "_" ? LetterBoxStatus.Disabled : LetterBoxStatus.Suggestion}
-        />
-      })}
-    </div>
-    <div className="AI-Options">
-      <Dropdown handleChange={handleChooseAlgorithm} options={options} selectedValue={algorithm}/>
-      <RunAlgorithmButton onClick={handleRunAlgorithm}/>
-    </div>
-    <div className="Errors">
-      {showIncompleteWord && 
-        <div>The red-highlighted words need to be completed.</div>
-      }
-      {showMissingWord &&
-        <div>The red-highlighted rows need to either be removed or filled in.</div>
-      }
-      {showSelectAlgorithm &&
-        <div>Please select an algorithm for a word suggestion.</div>
-      }
+        <div className="WordleSolverBoard">
+          {letterBoxes.map((row: LetterBoxEnterProps[], rowIndex: number) => {
+            return (
+              <div key={rowIndex} className="Row">
+                {rowIndex < activeRows && (rowIndex > 0 || row.map((box: LetterBoxEnterProps) => box.letter).join("") !== "_____") && <RowRemoveButton onClick={handleRemoveRow} rowIndex={rowIndex} />}
+                <div className="LetterBoxEnterRow">
+                  {row.map((cell: LetterBoxEnterProps, colIndex: number) => {
+                    return (
+                      <LetterBoxEnter
+                        key={colIndex}
+                        {...cell}
+                        selected={rowIndex === selectedRow && colIndex === selectedColumn}
+                        onClick={() => handleClick(rowIndex, colIndex)}  
+                      />
+                    )
+                  })}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+        <div className="Errors">
+          {showIncompleteWord && 
+            <div className="Error">The red-highlighted words need to be completed.</div>
+          }
+          {showMissingWord &&
+            <div className="Error">The red-highlighted rows need to either be removed or filled in.</div>
+          }
+          {showSelectAlgorithm &&
+            <div className="Error">Please select an algorithm for a word suggestion.</div>
+          }
+        </div>  
+      </div>
+      <div className="WordleSolverGuess">
+          {optimalGuess.split("").map((letter: string, col_index: number) => {
+            return <LetterBoxEnter 
+              key={col_index}
+              letter={letter}
+              status={letter === "_" ? LetterBoxStatus.Disabled : LetterBoxStatus.Suggestion}
+            />
+          })}
+      </div>
+      <div className="AI-Options">
+        <Dropdown handleChange={handleChooseAlgorithm} options={options} selectedValue={algorithm}/>
+        <RunAlgorithmButton onClick={handleRunAlgorithm}/>
+      </div>
     </div>
 
     <Keyboard 
