@@ -1,21 +1,12 @@
 from models import WordList
+from models.feedback import feedback
+import json
 
 class WordleCSP:
     def __init__(self, initial_word, target_word):
         self.current_guess = initial_word
         self.target_word = target_word
         self.possible_words = WordList().get()
-
-    def feedback(self, guess):
-        result = []
-        for i, letter in enumerate(guess):
-            if letter == self.target_word[i]:
-                result.append("green")
-            elif letter in self.target_word:
-                result.append("yellow")
-            else:
-                result.append("gray")
-        return result
 
     def update_constraints(self, guess, feedback):
         constraints = [{"include": set(), "exclude": set()} for _ in range(len(guess))]
@@ -55,24 +46,42 @@ class WordleCSP:
 
     def solve(self):
         attempt = 1
+        outputJSON = {
+            "startingWord": self.current_guess,
+            "target": self.target_word,
+            "wordAttempts": [],
+            "feedbacks": []
+        }
         output = ""
         while self.current_guess != self.target_word:
-            output += f"Attempt {attempt}: Guess - {self.current_guess} \n"
-            fb = self.feedback(self.current_guess)
+            output += f"Attempt {attempt}: Guess - {self.current_guess.upper()} \n"
+            print(outputJSON)
+            outputJSON["wordAttempts"].append(self.current_guess.upper())
+            print(self.current_guess)
+            print(self.target_word)
+            fb = feedback(self.current_guess.upper(), self.target_word.upper())
             output += f"Feedback: {fb} \n"
+            outputJSON["feedbacks"].append(fb)
 
             constraints, global_exclude = self.update_constraints(self.current_guess, fb)
 
+            print(self.possible_words)
             self.apply_constraints(constraints, global_exclude)
 
             if not self.possible_words:
                 output += "No possible words left based on constraints. \n"
-                return output
+                outputJSON["invalid"] = True
+                outputJSON["description"] = output
+                data = json.dumps(outputJSON)
+                return data
 
             self.current_guess = self.choose_optimal_guess()
             attempt += 1
         output += f"Solved! The target word is '{self.current_guess}' in {attempt} attempts."
-        return output
+        outputJSON["solved"] = True
+        outputJSON["description"] = output
+        data = json.dumps(outputJSON)
+        return data
 
     def choose_optimal_guess(self):
         from collections import Counter

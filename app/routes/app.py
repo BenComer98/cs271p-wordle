@@ -5,6 +5,7 @@ from routes import create_app
 from models import WordList
 from algorithms import WordleCSP
 from algorithms import WordleCSPNextBest
+from models.feedback import feedback
 app = create_app()
 
 # Enable CORS for the entire app
@@ -37,6 +38,7 @@ def check_word_in_list(word):
 @app.route('/csp/<initial_word>/<target_word>', methods=['GET'])
 def get_csp(initial_word, target_word):
     solver = WordleCSP(initial_word, target_word)
+    print("Got here!")
     return solver.solve()
 
 @app.route('/csp/bestGuess', methods=['POST'])
@@ -57,7 +59,7 @@ def get_best_guess_endpoint():
     if not word_lists:
         return jsonify({"error": "No valid words provided"}), 400
 
-    feedbacks = [get_feedback(guess, target_word) for guess in word_lists]
+    feedbacks = [feedback(guess, target_word) for guess in word_lists]
     best_guess = WordleCSPNextBest(target_word).suggest_next_word(word_lists, feedbacks)
     return jsonify({"best_guess": best_guess})
 
@@ -75,25 +77,7 @@ def get_feedback_endpoint():
     if not isinstance(answer, str) or not answer.strip():
         return jsonify({"error": "'answer' must be a non-empty string"}), 400
 
-    return jsonify({"feedback": get_feedback(guess, answer)})
-
-def get_feedback(guess, target):
-    counts = [0] * 26
-    feedback = ['gray'] * 5
-    
-    for i in range(5):
-        if guess[i] == target[i]:
-            feedback[i] = 'green'
-        else:
-            counts[ord(target[i]) - ord('A')] += 1
-    
-    for i in range(5):
-        if feedback[i] == 'gray':
-            if counts[ord(guess[i]) - ord('A')] > 0:
-                feedback[i] = 'yellow'
-            counts[ord(guess[i]) - ord('A')] -= 1
-
-    return feedback
+    return jsonify({"feedback": feedback(guess, answer)})
 
 def run_app():
     app.run()
