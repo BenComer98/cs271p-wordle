@@ -3,8 +3,9 @@
 .hg-theme-default {
   position: fixed;
   bottom: 0;
+  height: 25%;
 }
 
 .hg-theme-default .hg-button {
-  height: 8vh;
+  height: 7.6vh;
 }
