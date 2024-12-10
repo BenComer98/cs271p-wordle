@@ -14,7 +14,7 @@ export default async function suggestOptimalGuess(
     case Algorithm.RandomGuess:
       return await getRandomWord();
     case Algorithm.ConstraintSat:
-      // return await cspGuess(target, board);
+      return await cspGuess(board);
     case Algorithm.Reinforcement:
       // return await reinforcementGuess(target, board);
     default:
