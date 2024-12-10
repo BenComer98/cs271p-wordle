@@ -5,7 +5,7 @@ from routes import create_app
 from models import WordList
 from algorithms import WordleCSP
 from algorithms import WordleCSPNextBest
-from models.feedback import feedback
+from models.feedback import feedback, allowed_list
 app = create_app()
 
 # Enable CORS for the entire app
@@ -21,6 +21,17 @@ def hello():
 @app.route('/wordList', methods=['GET'])
 def get_word_list():
     return jsonify(word_list)
+
+@app.route('/allowedWords', methods=['POST'])
+def get_allowed_words():
+    data = request.json
+    if not data or 'guesses' not in data or len(data['guesses']) == 0:
+        return jsonify({"allowed_words": word_list})
+
+    if 'feedbacks' not in data or not isinstance(data['guesses'], list) or not isinstance(data['feedbacks'], list) or len(data['guesses']) != len(data['feedbacks']):
+        return jsonify({"error": "No feedbacks provided for words."}), 400
+    
+    return jsonify({"allowed_words": allowed_list(word_list, data['guesses'], data['feedbacks'])})
 
 @app.route('/randomWord', methods=['GET'])
 def get_random_word_list():
@@ -38,7 +49,6 @@ def check_word_in_list(word):
 @app.route('/csp/<initial_word>/<target_word>', methods=['GET'])
 def get_csp(initial_word, target_word):
     solver = WordleCSP(initial_word, target_word)
-    print("Got here!")
     return solver.solve()
 
 @app.route('/csp/bestGuess', methods=['POST'])
@@ -57,8 +67,9 @@ def get_best_guess_endpoint():
 
     word_lists = [word.strip() for word in words.split(',') if word.strip()]
     if not word_lists:
-        return jsonify({"error": "No valid words provided"}), 400
+        word_lists = []
 
+    print(word_lists)
     feedbacks = [feedback(guess, target_word) for guess in word_lists]
     best_guess = WordleCSPNextBest(target_word).suggest_next_word(word_lists, feedbacks)
     return jsonify({"best_guess": best_guess})
