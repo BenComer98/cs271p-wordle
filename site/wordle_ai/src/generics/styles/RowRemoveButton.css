@@ -8,6 +8,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  margin-left: -44px;
 }
 
 .RowRemoveButton .minus-sign {

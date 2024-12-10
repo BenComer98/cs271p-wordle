@@ -2,11 +2,39 @@
   flex: 1;
 }
 
+.WordleSolverContent {
+  position: fixed;
+  height: 75%;
+  top: 0;
+  width: 100%;
+  overflow-y: scroll;
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.WordleBoardArea {
+  display: flex;
+  width: 100%;
+  justify-content: right;
+  flex-direction: row;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
 .WordleSolverBoard {
   display: flex;
   flex-direction: column;
   gap: 0px;
   margin-top: 2%;
+  width: 60%;
+}
+
+.LetterBoxEnterRow {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .WordleSolverGuess {
@@ -14,7 +42,8 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin-bottom: 3%;
+  width: 60%;
+  margin: 0 auto;
 }
 
 .WordleSolverBoard > div {
@@ -28,16 +57,19 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-top: 25px;
   justify-content: center;
 }
 
 .Errors {
   color: red;
+  width: 20%;
+  margin-top: 10%;
+  display: flex;
+  flex-direction: column;
 }
 
-.Keyboard {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 25%;
+.Error {
+  text-align: center;
+  padding: 5px;
 }
