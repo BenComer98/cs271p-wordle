@@ -22,17 +22,6 @@ class WordleCSPNextBest:
         self.target_word = target_word
         self.possible_words = WordList().get()
 
-    def feedback(self, guess):
-        result = []
-        for i, letter in enumerate(guess):
-            if letter == self.target_word[i]:
-                result.append("green")
-            elif letter in self.target_word:
-                result.append("yellow")
-            else:
-                result.append("gray")
-        return result
-
     def apply_constraints(self, constraints, global_include, global_exclude):
         new_possible_words = []
         for word in self.possible_words:

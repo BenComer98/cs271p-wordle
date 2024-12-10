@@ -12,7 +12,8 @@ export async function cspGuess(target: string, board: LetterBoxProps[][]): Promi
 export async function cspFull(target: string): Promise<LetterBoxProps[][]> {
   const api_url = getHost() + "/csp/" + await getRandomWord() + "/" + target;
   debug(api_url);
-  axios.get(api_url).then((response: CSPFullResponse) => {
+  axios.get(api_url).then((response: any) => {
+    debug(response)
     const responseData = response.data;
     if (responseData.error) {
       console.error(responseData.error);
