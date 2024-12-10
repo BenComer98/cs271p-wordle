@@ -2,11 +2,12 @@ from models import WordList
 
 class WordleCSP:
     def __init__(self, initial_word, target_word):
-        self.current_guess = initial_word
-        self.target_word = target_word
-        self.possible_words = WordList().get()
+        self.current_guess = initial_word.lower()
+        self.target_word = target_word.lower()
+        self.possible_words = [word.lower() for word in WordList().get()]
 
     def feedback(self, guess):
+        guess = guess.lower()
         result = []
         for i, letter in enumerate(guess):
             if letter == self.target_word[i]:
@@ -18,6 +19,7 @@ class WordleCSP:
         return result
 
     def update_constraints(self, guess, feedback):
+        guess = guess.lower()
         constraints = [{"include": set(), "exclude": set()} for _ in range(len(guess))]
         global_exclude = set()
         for i, (letter, fb) in enumerate(zip(guess, feedback)):
