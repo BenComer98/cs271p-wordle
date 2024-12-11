@@ -3,4 +3,5 @@ export default interface CSPFullResponse {
   error?: string;
   wordAttempts?: string[];
   feedbacks?: string[][];
+  solved?: boolean;
 }

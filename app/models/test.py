@@ -1,9 +1,9 @@
 import random
-from WordleEnv import WordleEnv
+from models.WordleEnv import WordleEnv
 import numpy as np
 import tensorflow as tf
 
-model = tf.keras.models.load_model("wordle_10000_dqn_model.h5")
+model = tf.keras.models.load_model("models/wordle_10000_dqn_model.h5")
 env = WordleEnv()
 
 def similarity_score(word_idx, previous_guesses, target):
@@ -79,6 +79,6 @@ def test_model(env, model, target_word=None, start_word=None, max_attempts=None)
 
     return guesses, statuses
 
-guesses,statuses = test_model(env, model, target_word="CHIRP", start_word="CHURN",max_attempts=2)
-print(guesses)
-print(statuses)
+# guesses,statuses = test_model(env, model, target_word="CHIRP", start_word="CHURN",max_attempts=2)
+# print(guesses)
+# print(statuses)
