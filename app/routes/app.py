@@ -5,6 +5,7 @@ from routes import create_app
 from models import WordList
 from algorithms import WordleCSP
 from algorithms import WordleCSPNextBest
+from models.feedback import feedback, allowed_list
 app = create_app()
 
 # Enable CORS for the entire app
@@ -20,6 +21,17 @@ def hello():
 @app.route('/wordList', methods=['GET'])
 def get_word_list():
     return jsonify(word_list)
+
+@app.route('/allowedWords', methods=['POST'])
+def get_allowed_words():
+    data = request.json
+    if not data or 'guesses' not in data or len(data['guesses']) == 0:
+        return jsonify({"allowed_words": word_list})
+
+    if 'feedbacks' not in data or not isinstance(data['guesses'], list) or not isinstance(data['feedbacks'], list) or len(data['guesses']) != len(data['feedbacks']):
+        return jsonify({"error": "No feedbacks provided for words."}), 400
+    
+    return jsonify({"allowed_words": allowed_list(word_list, data['guesses'], data['feedbacks'])})
 
 @app.route('/randomWord', methods=['GET'])
 def get_random_word_list():
@@ -55,9 +67,10 @@ def get_best_guess_endpoint():
 
     word_lists = [word.strip() for word in words.split(',') if word.strip()]
     if not word_lists:
-        return jsonify({"error": "No valid words provided"}), 400
+        word_lists = []
 
-    feedbacks = [get_feedback(guess, target_word) for guess in word_lists]
+    print(word_lists)
+    feedbacks = [feedback(guess, target_word) for guess in word_lists]
     best_guess = WordleCSPNextBest(target_word).suggest_next_word(word_lists, feedbacks)
     return jsonify({"best_guess": best_guess})
 
@@ -75,25 +88,7 @@ def get_feedback_endpoint():
     if not isinstance(answer, str) or not answer.strip():
         return jsonify({"error": "'answer' must be a non-empty string"}), 400
 
-    return jsonify({"feedback": get_feedback(guess, answer)})
-
-def get_feedback(guess, target):
-    counts = [0] * 26
-    feedback = ['gray'] * 5
-    
-    for i in range(5):
-        if guess[i] == target[i]:
-            feedback[i] = 'green'
-        else:
-            counts[ord(target[i]) - ord('A')] += 1
-    
-    for i in range(5):
-        if feedback[i] == 'gray':
-            if counts[ord(guess[i]) - ord('A')] > 0:
-                feedback[i] = 'yellow'
-            counts[ord(guess[i]) - ord('A')] -= 1
-
-    return feedback
+    return jsonify({"feedback": feedback(guess, answer)})
 
 def run_app():
     app.run()
