@@ -1,4 +1,6 @@
 import random
+from models import WordleEnv
+from models.test import test_model
 from flask import jsonify, request
 from flask_cors import CORS  # Import CORS
 from routes import create_app
@@ -6,6 +8,7 @@ from models import WordList
 from algorithms import WordleCSP
 from algorithms import WordleCSPNextBest
 from models.feedback import feedback, allowed_list
+import tensorflow as tf
 app = create_app()
 
 # Enable CORS for the entire app
@@ -46,10 +49,28 @@ def check_word_in_list(word):
     is_present = word.lower() in word_list
     return jsonify({"word": word, "is_present": is_present})
 
-@app.route('/csp/<initial_word>/<target_word>', methods=['GET'])
-def get_csp(initial_word, target_word):
-    solver = WordleCSP(initial_word, target_word)
+@app.route('/csp', methods=['POST'])
+def get_csp():
+    data = request.json
+    if not data or 'initial_word' not in data or 'target_word' not in data:
+        return jsonify({"error": "Missing initial word or target word"}), 400
+    
+    solver = WordleCSP(data["initial_word"], data["target_word"])
     return solver.solve()
+
+@app.route('/reinforcement', methods=['POST'])
+def get_reinforcement():
+    data = request.json
+    if not data or 'initial_word' not in data or 'target_word' not in data:
+        return jsonify({"error": "Missing initial word or target word"}), 400
+    
+    model = tf.keras.models.load_model("wordle_10000_dqn_model.h5")
+    env = WordleEnv()
+    guesses, feedback = test_model(env, model, target_word=data["target_word"], start_word=data["initial_word"], max_attempts=6)
+    return jsonify({
+        "guesses": guesses,
+        "feedback": feedback
+    })
 
 @app.route('/csp/bestGuess', methods=['POST'])
 def get_best_guess_endpoint():
