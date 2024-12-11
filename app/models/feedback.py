@@ -1,8 +1,6 @@
 def feedback(guess, target):
     counts = [0] * 26
     feedback = ['gray'] * 5
-    print(guess)
-    print(target)
     
     for i in range(5):
         if guess[i] == target[i]:

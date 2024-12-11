@@ -11,7 +11,7 @@ export default async function runAlgorithm(algorithm: Algorithm, target: string)
     case Algorithm.ConstraintSat:
       return await cspFull(target);
     case Algorithm.Reinforcement:
-      // return await reinforcementFull(target);
+      return await reinforcementFull(target);
     default:
       return await runGuessRandom(target);
   }

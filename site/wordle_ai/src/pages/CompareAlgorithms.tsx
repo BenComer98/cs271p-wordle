@@ -28,9 +28,18 @@ export default function CompareAlgorithms() {
   }
 
   const runAlgorithms = async (word: string) => {
-    setConstraintSatResult(await runAlgorithm(Algorithm.ConstraintSat, word));
-    setReinforcementResult(await runAlgorithm(Algorithm.Reinforcement, word));
-    setRandomResult(await runAlgorithm(Algorithm.RandomGuess, word));
+    runAlgorithm(Algorithm.ConstraintSat, word).then((result: LetterBoxProps[][]) => {
+      console.log(result);
+      setConstraintSatResult(result);
+    });
+
+    runAlgorithm(Algorithm.Reinforcement, word).then((result: LetterBoxProps[][]) => {
+      setReinforcementResult(result);
+    });
+
+    runAlgorithm(Algorithm.RandomGuess, word).then((result: LetterBoxProps[][]) => {
+      setRandomResult(result);
+    });
   }
 
   useEffect(() => {

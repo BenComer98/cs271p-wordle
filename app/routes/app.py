@@ -1,5 +1,5 @@
 import random
-from models import WordleEnv
+from models.WordleEnv import WordleEnv
 from models.test import test_model
 from flask import jsonify, request
 from flask_cors import CORS  # Import CORS
@@ -64,7 +64,7 @@ def get_reinforcement():
     if not data or 'initial_word' not in data or 'target_word' not in data:
         return jsonify({"error": "Missing initial word or target word"}), 400
     
-    model = tf.keras.models.load_model("wordle_10000_dqn_model.h5")
+    model = tf.keras.models.load_model("models/wordle_10000_dqn_model.h5")
     env = WordleEnv()
     guesses, feedback = test_model(env, model, target_word=data["target_word"], start_word=data["initial_word"], max_attempts=6)
     return jsonify({
@@ -90,10 +90,34 @@ def get_best_guess_endpoint():
     if not word_lists:
         word_lists = []
 
-    print(word_lists)
-    feedbacks = [get_feedback(guess, target_word) for guess in word_lists]
+    feedbacks = [feedback(guess, target_word) for guess in word_lists]
     best_guess = WordleCSPNextBest(target_word).suggest_next_word(word_lists, feedbacks)
     return jsonify({"best_guess": best_guess})
+
+@app.route('/reinforcement/bestGuess', methods=['POST'])
+def get_best_guess_r_endpoint():
+    data = request.json
+    if not data or 'words' not in data or 'target_word' not in data:
+        return jsonify({"error": "Missing 'words' or 'target_word' parameter"}), 400
+
+    words = data['words']
+    target_word = data['target_word']
+
+    if not isinstance(words, str):
+        return jsonify({"error": "'words' must be a comma-separated string"}), 400
+    if not isinstance(target_word, str) or not target_word.strip():
+        return jsonify({"error": "'target_word' must be a non-empty string"}), 400
+
+    word_lists = [word.strip() for word in words.split(',') if word.strip()]
+    if not word_lists:
+        word_lists = []
+
+    model = tf.keras.models.load_model("models/wordle_10000_dqn_model.h5")
+    env = WordleEnv()
+    start_word = words.split(",")[-1]
+    guess, _ = test_model(env, model, target_word=target_word, start_word=start_word,max_attempts=2)
+
+    return jsonify({"best_guess": guess[0].upper()})
 
 @app.route('/getFeedback', methods=['POST'])
 def get_feedback_endpoint():
@@ -110,18 +134,6 @@ def get_feedback_endpoint():
         return jsonify({"error": "'answer' must be a non-empty string"}), 400
 
     return jsonify({"feedback": feedback(guess, answer)})
-
-
-def get_feedback(guess, target):
-    feedback = []
-    for i, letter in enumerate(guess):
-        if letter == target[i]:
-            feedback.append('green')
-        elif letter in target:
-            feedback.append('yellow')
-        else:
-            feedback.append('gray')
-    return feedback
 
 def run_app():
     app.run()

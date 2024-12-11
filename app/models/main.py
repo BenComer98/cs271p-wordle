@@ -150,4 +150,4 @@ if __name__ == "__main__":
 
     train_dqn(env, agent, episodes=10000)
 
-    agent.model.save("wordle_10000_dqn_model.h5")
+    agent.model.save("models/wordle_10000_dqn_model.h5")
