@@ -16,6 +16,18 @@ def feedback(guess, target):
 
     return feedback
 
+def get_feedback(guess, target):
+    feedback = []
+    for i, letter in enumerate(guess):
+        if letter == target[i]:
+            feedback.append('green')
+        elif letter in target:
+            feedback.append('yellow')
+        else:
+            feedback.append('gray')
+    return feedback
+
+
 # Is the word still legal given the passed in feedback?
 def allowed_list(words, guesses, feedbacks, not_found=None, definite=None, not_at=None):
     if not_found is None or definite is None or not_at is None:

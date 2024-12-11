@@ -7,8 +7,9 @@ from routes import create_app
 from models import WordList
 from algorithms import WordleCSP
 from algorithms import WordleCSPNextBest
-from models.feedback import feedback, allowed_list
+from models.feedback import feedback, allowed_list, get_feedback
 import tensorflow as tf
+
 app = create_app()
 
 # Enable CORS for the entire app
@@ -80,17 +81,18 @@ def get_best_guess_endpoint():
 
     words = data['words']
     target_word = data['target_word']
-
+    words = words.lower()
+    target_word = target_word.lower()
     if not isinstance(words, str):
         return jsonify({"error": "'words' must be a comma-separated string"}), 400
     if not isinstance(target_word, str) or not target_word.strip():
         return jsonify({"error": "'target_word' must be a non-empty string"}), 400
 
-    word_lists = [word.strip() for word in words.split(',') if word.strip()]
+    word_lists = [word.strip().lower() for word in words.split(',') if word.strip()]
     if not word_lists:
         word_lists = []
 
-    feedbacks = [feedback(guess, target_word) for guess in word_lists]
+    feedbacks = [get_feedback(guess, target_word) for guess in word_lists]
     best_guess = WordleCSPNextBest(target_word).suggest_next_word(word_lists, feedbacks)
     return jsonify({"best_guess": best_guess})
 
@@ -134,6 +136,8 @@ def get_feedback_endpoint():
         return jsonify({"error": "'answer' must be a non-empty string"}), 400
 
     return jsonify({"feedback": feedback(guess, answer)})
+
+
 
 def run_app():
     app.run()

@@ -15,10 +15,11 @@ def update_constraints(guess, feedback, constraints, global_include, global_excl
                 global_exclude.add(letter)
             constraints[i]["exclude"].add(letter)
     return constraints, global_include, global_exclude
+
 class WordleCSPNextBest:
     def __init__(self, target_word):
-        self.target_word = target_word
-        self.possible_words = WordList().get()
+        self.target_word = target_word.lower()
+        self.possible_words = [word.lower() for word in WordList().get()]
 
     def feedback(self, guess):
         result = []
