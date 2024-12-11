@@ -15,7 +15,6 @@ export async function cspGuess(board: LetterBoxEnterProps[][]) : Promise<string>
   });
 
   const guesses = validBoard.map((row: LetterBoxEnterProps[]) => row.map((letter: LetterBoxEnterProps) => letter.letter).join(""));
-  debug(guesses)
   const data = {
     "guesses": guesses,
     "feedbacks": validBoard.map((row: LetterBoxEnterProps[]) => row.map((letter: LetterBoxEnterProps) => {
@@ -34,7 +33,6 @@ export async function cspGuess(board: LetterBoxEnterProps[][]) : Promise<string>
 
   return await axios.post(api_url, data).then(async (response: AxiosResponse<AllowedWordsResponse>) => {
     const responseData = response.data;
-    console.log(responseData);
     if (responseData.error) {
       console.error(responseData.error);
       return "_____";
@@ -45,19 +43,18 @@ export async function cspGuess(board: LetterBoxEnterProps[][]) : Promise<string>
     }
 
     const allowed_words = responseData.allowed_words;
-    console.log(allowed_words)
     if (allowed_words.length === 0) {
       return "_____";
     }
     // We get a potential correct guess from the currently allowed words
     const target = allowed_words[Math.floor(Math.random() * allowed_words.length)];
     const api_url = getHost() + "/csp/bestGuess";
-    console.log(target)
     const data = {
       "words": guesses.join(),
       "target_word": target.toUpperCase()
     }
-    
+
+    console.log(data);
     return await axios.post(api_url, data).then((response: AxiosResponse<CSPGuessReponse>) => {
       const responseData = response.data;
       console.log(responseData);
@@ -70,7 +67,7 @@ export async function cspGuess(board: LetterBoxEnterProps[][]) : Promise<string>
         return "_____";
       }
 
-      return responseData.best_guess;
+      return responseData.best_guess.toUpperCase();
     })
   });
 }

@@ -4,7 +4,6 @@ import getHost from "../getHost";
 import LetterBoxEnterProps from "../../interfaces/LetterBoxEnterProps";
 import ReinforcementFullResponse from "../../interfaces/api/ReinforcementFullResponse";
 import { LetterBoxStatus } from "../../enums/LetterBoxStatus";
-import debug from "../../debug/debug";
 import AllowedWordsResponse from "../../interfaces/api/AllowedWordsResponse";
 import ReinforcementGuessResponse from "../../interfaces/api/ReinforcementGuessResponse";
 
@@ -15,7 +14,6 @@ export async function reinforcementGuess(board: LetterBoxEnterProps[][]): Promis
   });
 
   const guesses = validBoard.map((row: LetterBoxEnterProps[]) => row.map((letter: LetterBoxEnterProps) => letter.letter).join(""));
-  debug(guesses)
   const data = {
     "guesses": guesses,
     "feedbacks": validBoard.map((row: LetterBoxEnterProps[]) => row.map((letter: LetterBoxEnterProps) => {
@@ -34,7 +32,6 @@ export async function reinforcementGuess(board: LetterBoxEnterProps[][]): Promis
 
   return await axios.post(api_url, data).then(async (response: AxiosResponse<AllowedWordsResponse>) => {
     const responseData = response.data;
-    console.log(responseData);
     if (responseData.error) {
       console.error(responseData.error);
       return "_____";
@@ -49,13 +46,15 @@ export async function reinforcementGuess(board: LetterBoxEnterProps[][]): Promis
     if (allowed_words.length === 0) {
       return "_____";
     }
+
     // We get a potential correct guess from the currently allowed words
     const target = allowed_words[Math.floor(Math.random() * allowed_words.length)];
+    const backup_word = allowed_words[Math.floor(Math.random() * allowed_words.length)];
     const api_url = getHost() + "/reinforcement/bestGuess";
-    console.log(target)
     const data = {
-      "words": guesses.join(),
-      "target_word": target.toUpperCase()
+      "words": guesses.length === 0 ? "slate" : guesses.join(),
+      "target_word": target.toUpperCase(),
+      "backup_word": backup_word
     }
     console.log(data);
     return await axios.post(api_url, data).then((response: AxiosResponse<ReinforcementGuessResponse>) => {

@@ -115,6 +115,11 @@ def get_best_guess_r_endpoint():
     model = tf.keras.models.load_model("models/wordle_10000_dqn_model.h5")
     env = WordleEnv()
     start_word = words.split(",")[-1]
+    if start_word not in word_list:
+        if 'backup_word' not in data or not isinstance(data['backup_word'], str):
+            return jsonify({"error": "Last word isn't in the list, and no backup provided."}), 400
+        start_word = data['backup_word']
+
     guess, _ = test_model(env, model, target_word=target_word, start_word=start_word,max_attempts=2)
 
     return jsonify({"best_guess": guess[0].upper()})
