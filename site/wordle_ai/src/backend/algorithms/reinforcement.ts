@@ -6,6 +6,30 @@ import ReinforcementFullResponse from "../../interfaces/api/ReinforcementFullRes
 import { LetterBoxStatus } from "../../enums/LetterBoxStatus";
 import AllowedWordsResponse from "../../interfaces/api/AllowedWordsResponse";
 import ReinforcementGuessResponse from "../../interfaces/api/ReinforcementGuessResponse";
+import ReinforcementGuessRequest from "../../interfaces/api/ReinforcementGuessRequest";
+
+async function getGuess(api_url: string, data: ReinforcementGuessRequest, allowed_words: string[], retries: number): Promise<string> {
+  return await axios.post(api_url, data).then(async (response: AxiosResponse<ReinforcementGuessResponse>) => {
+    const responseData = response.data;
+    if (responseData.error) {
+      console.error(responseData.error);
+      return "_____";
+    }
+    if (!responseData.best_guess) {
+      console.error("Couldn't find a best guess from csp. Check the API!");
+      return "_____";
+    }
+
+    if (!allowed_words.includes(responseData.best_guess.toUpperCase())) {
+      if (retries > 0) {
+        return await getGuess(api_url, data, allowed_words, retries - 1);
+      }
+      return data.backup_word;
+    }
+
+    return responseData.best_guess.toUpperCase();
+  });
+}
 
 export async function reinforcementGuess(board: LetterBoxEnterProps[][]): Promise<string> {
   const api_url = getHost() + "/allowedWords";
@@ -42,7 +66,6 @@ export async function reinforcementGuess(board: LetterBoxEnterProps[][]): Promis
     }
 
     const allowed_words = responseData.allowed_words;
-    console.log(allowed_words)
     if (allowed_words.length === 0) {
       return "_____";
     }
@@ -56,21 +79,8 @@ export async function reinforcementGuess(board: LetterBoxEnterProps[][]): Promis
       "target_word": target.toUpperCase(),
       "backup_word": backup_word
     }
-    console.log(data);
-    return await axios.post(api_url, data).then((response: AxiosResponse<ReinforcementGuessResponse>) => {
-      const responseData = response.data;
-      console.log(responseData);
-      if (responseData.error) {
-        console.error(responseData.error);
-        return "_____";
-      }
-      if (!responseData.best_guess) {
-        console.error("Couldn't find a best guess from csp. Check the API!");
-        return "_____";
-      }
 
-      return responseData.best_guess.toUpperCase();
-    })
+    return await getGuess(api_url, data, allowed_words, 10);
   });
 }
 

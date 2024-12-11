@@ -67,7 +67,6 @@ export default function CompareAlgorithms() {
 
   const handleClickRandom = async () => {
     await setWordAsync().then((answer: string) => {
-      debug(answer);
       handleSubmit(answer);
       setWord(answer);
     });

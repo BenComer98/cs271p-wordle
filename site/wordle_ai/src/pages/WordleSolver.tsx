@@ -39,6 +39,7 @@ export default function WordleSolver(props: WordleSolverProps) {
   const [showIncompleteWord, setShowIncompleteWord] = useState(false);
   const [showMissingWord, setShowMissingWord] = useState(false);
   const [showSelectAlgorithm, setShowSelectAlgorithm] = useState(false);
+  const [showInvalidBoard, setShowInvalidBoard] = useState(false);
   const [optimalGuess, setOptimalGuess] = useState("_____");
 
   const makeRangeOfRowsEmpty = (startRow: number, endRow: number) => {
@@ -224,6 +225,7 @@ export default function WordleSolver(props: WordleSolverProps) {
 
       setShowIncompleteWord(false);
       setShowMissingWord(false);
+      setShowInvalidBoard(false);
     }
 
     window.addEventListener("keydown", handleKeyDown);
@@ -236,7 +238,6 @@ export default function WordleSolver(props: WordleSolverProps) {
   const handleRemoveRow = (rowIndex: number) => {
     setActiveRows((_: number) => {
       if (rowIndex === 0) {
-        /* Add popup? */
         setLetterBoxes(getEmptyBoard());
         return 1;
       }
@@ -247,6 +248,7 @@ export default function WordleSolver(props: WordleSolverProps) {
     });
     setSelectedRow(rowIndex === 0 ? rowIndex : rowIndex-1);
     setShowMissingWord(false);
+    setShowInvalidBoard(false);
   }
 
   const handleRunAlgorithm = async () => {
@@ -257,13 +259,13 @@ export default function WordleSolver(props: WordleSolverProps) {
         const rowWord = row.map((box: LetterBoxEnterProps) => {
           return box.letter;
         }).join("");
-        debug(rowWord);
+        
         let newRow = row;
         if (rowWord === "_____") {
           if (rowIndex !== 0) {
             setShowMissingWord(true);
             newRow = newRow.map((letter: LetterBoxEnterProps) => {
-              return {...letter, status: letter.letter === "_" ? LetterBoxStatus.InvalidWord : letter.status};
+              return {...letter, status: LetterBoxStatus.InvalidWord};
             });
             validBoard = false;
           }
@@ -271,7 +273,7 @@ export default function WordleSolver(props: WordleSolverProps) {
         else if (containsBlank(rowWord)) {
           setShowIncompleteWord(true);
           newRow = newRow.map((letter: LetterBoxEnterProps) => {
-            return {...letter, status: LetterBoxStatus.InvalidWord};
+            return {...letter, status: letter.letter !== '_' ? letter.status : LetterBoxStatus.InvalidWord};
           });
           validBoard = false;
         }
@@ -279,6 +281,7 @@ export default function WordleSolver(props: WordleSolverProps) {
       }
       else return row;
     });
+
     if (algorithm === Algorithm.NoneSelected) {
       setShowSelectAlgorithm(true);
       validBoard = false;
@@ -287,8 +290,14 @@ export default function WordleSolver(props: WordleSolverProps) {
     setLetterBoxes(newBoxes);
     if (!validBoard) return;
 
-    const optimalGuess = await suggestOptimalGuess(algorithm, newBoxes);
-    setOptimalGuess(optimalGuess);
+    await suggestOptimalGuess(algorithm, newBoxes).then((optimalGuess) => {
+      if (optimalGuess === "_____") {
+        setShowInvalidBoard(true);
+      }
+      else {
+        setOptimalGuess(optimalGuess);
+      }
+    });
   }
 
   const handleChooseAlgorithm = (algorithm: Algorithm) => {
@@ -338,6 +347,9 @@ export default function WordleSolver(props: WordleSolverProps) {
           }
           {showSelectAlgorithm &&
             <div className="Error">Please select an algorithm for a word suggestion.</div>
+          }
+          {showInvalidBoard && 
+            <div className="Error">We couldn't find a valid word to suggest in our dictionary. Please check your board is valid!</div>
           }
         </div>  
       </div>

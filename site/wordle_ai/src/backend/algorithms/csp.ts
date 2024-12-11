@@ -54,10 +54,8 @@ export async function cspGuess(board: LetterBoxEnterProps[][]) : Promise<string>
       "target_word": target.toUpperCase()
     }
 
-    console.log(data);
     return await axios.post(api_url, data).then((response: AxiosResponse<CSPGuessReponse>) => {
       const responseData = response.data;
-      console.log(responseData);
       if (responseData.error) {
         console.error(responseData.error);
         return "_____";
@@ -74,7 +72,6 @@ export async function cspGuess(board: LetterBoxEnterProps[][]) : Promise<string>
 
 export async function cspFull(target: string): Promise<LetterBoxProps[][]> {
   const api_url = getHost() + "/csp"
-  debug(api_url);
   const data = {
     "initial_word": "SLATE",
     "target_word": target
@@ -87,13 +84,11 @@ export async function cspFull(target: string): Promise<LetterBoxProps[][]> {
       console.error(responseData.error);
       return [];
     }
-    console.log(responseData);
     if (!responseData.wordAttempts || !responseData.feedbacks || responseData.feedbacks.length !== responseData.wordAttempts.length) {
       console.error("Incorrect response data.");
       return [];
     }
 
-    console.log(responseData);
     if (responseData.solved && responseData.wordAttempts.length < 6) {
       // The api only returns the guesses leading up to the correct one; Let's add that here
       responseData.wordAttempts.push(target);

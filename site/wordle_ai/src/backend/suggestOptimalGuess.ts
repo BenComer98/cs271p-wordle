@@ -9,7 +9,6 @@ export default async function suggestOptimalGuess(
   algorithm: Algorithm,
   board: LetterBoxEnterProps[][]
 ): Promise<string> {
-  debug("Running " + algorithm);
   switch(algorithm) {
     case Algorithm.RandomGuess:
       return await getRandomWord();

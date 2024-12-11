@@ -57,17 +57,13 @@ class WordleCSP:
         output = ""
         while self.current_guess != self.target_word:
             output += f"Attempt {attempt}: Guess - {self.current_guess.upper()} \n"
-            print(outputJSON)
             outputJSON["wordAttempts"].append(self.current_guess.upper())
-            print(self.current_guess)
-            print(self.target_word)
             fb = feedback(self.current_guess.upper(), self.target_word.upper())
             output += f"Feedback: {fb} \n"
             outputJSON["feedbacks"].append(fb)
 
             constraints, global_exclude = self.update_constraints(self.current_guess, fb)
 
-            print(self.possible_words)
             self.apply_constraints(constraints, global_exclude)
 
             if not self.possible_words:

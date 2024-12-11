@@ -38,7 +38,6 @@ def allowed_list(words, guesses, feedbacks, not_found=None, definite=None, not_a
 
         for guess, feedback in zip(guesses, feedbacks):
             for i in range(5):
-                print("Current check:", guess[i], feedback[i])
                 if feedback[i] == 'green':
                     definite[i] = guess[i]
                     if guess[i] not in contains:

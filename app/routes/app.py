@@ -124,7 +124,8 @@ def get_best_guess_r_endpoint():
 
     guess, _ = test_model(env, model, target_word=target_word, start_word=start_word,max_attempts=2)
 
-    return jsonify({"best_guess": guess[0].upper()})
+    print(guess)
+    return jsonify({"best_guess": guess[-1].upper()})
 
 @app.route('/getFeedback', methods=['POST'])
 def get_feedback_endpoint():

@@ -6,7 +6,6 @@ import debug from "../debug/debug";
 
 export default function Keyboard(props: KeyboardProps) {
   const onKeyPress = (key: string) => {
-    debug(key);
     if (isAlpha(key)) {
       props.handleType(key);
     }
