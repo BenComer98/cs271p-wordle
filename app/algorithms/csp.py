@@ -4,11 +4,13 @@ import json
 
 class WordleCSP:
     def __init__(self, initial_word, target_word):
-        self.current_guess = initial_word
-        self.target_word = target_word
-        self.possible_words = WordList().get()
+        self.current_guess = initial_word.lower()
+        self.target_word = target_word.lower()
+        self.possible_words = [word.lower() for word in WordList().get()]
 
+        
     def update_constraints(self, guess, feedback):
+        guess = guess.lower()
         constraints = [{"include": set(), "exclude": set()} for _ in range(len(guess))]
         global_exclude = set()
         for i, (letter, fb) in enumerate(zip(guess, feedback)):

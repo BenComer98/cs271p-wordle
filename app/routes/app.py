@@ -70,7 +70,7 @@ def get_best_guess_endpoint():
         word_lists = []
 
     print(word_lists)
-    feedbacks = [feedback(guess, target_word) for guess in word_lists]
+    feedbacks = [get_feedback(guess, target_word) for guess in word_lists]
     best_guess = WordleCSPNextBest(target_word).suggest_next_word(word_lists, feedbacks)
     return jsonify({"best_guess": best_guess})
 
@@ -89,6 +89,18 @@ def get_feedback_endpoint():
         return jsonify({"error": "'answer' must be a non-empty string"}), 400
 
     return jsonify({"feedback": feedback(guess, answer)})
+
+
+def get_feedback(guess, target):
+    feedback = []
+    for i, letter in enumerate(guess):
+        if letter == target[i]:
+            feedback.append('green')
+        elif letter in target:
+            feedback.append('yellow')
+        else:
+            feedback.append('gray')
+    return feedback
 
 def run_app():
     app.run()
