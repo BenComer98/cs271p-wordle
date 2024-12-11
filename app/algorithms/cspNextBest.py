@@ -15,12 +15,22 @@ def update_constraints(guess, feedback, constraints, global_include, global_excl
                 global_exclude.add(letter)
             constraints[i]["exclude"].add(letter)
     return constraints, global_include, global_exclude
-
-
 class WordleCSPNextBest:
     def __init__(self, target_word):
         self.target_word = target_word
         self.possible_words = WordList().get()
+
+    def feedback(self, guess):
+        result = []
+        for i, letter in enumerate(guess):
+            if letter == self.target_word[i]:
+                result.append("green")
+            elif letter in self.target_word:
+                result.append("yellow")
+            else:
+                result.append("gray")
+        return result
+
 
     def apply_constraints(self, constraints, global_include, global_exclude):
         new_possible_words = []
@@ -56,7 +66,6 @@ class WordleCSPNextBest:
 
     def suggest_next_word(self, guesses, feedbacks):
         self.possible_words = WordList().get()
-
         constraints = [{"include": set(), "exclude": set()} for _ in range(5)]
         global_include = set()
         global_exclude = set()
@@ -65,10 +74,8 @@ class WordleCSPNextBest:
                 guess, feedback, constraints, global_include, global_exclude
             )
             self.apply_constraints(constraints, global_include, global_exclude)
-
         if not self.possible_words:
             print("No possible words left based on constraints.")
             return None
-
         next_guess = self.choose_optimal_guess()
         return next_guess

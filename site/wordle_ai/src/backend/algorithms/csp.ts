@@ -78,15 +78,21 @@ export async function cspGuess(board: LetterBoxEnterProps[][]) : Promise<string>
 }
 
 export async function cspFull(target: string): Promise<LetterBoxProps[][]> {
-  const api_url = getHost() + "/csp/SLATE/" + target;
+  const api_url = getHost() + "/csp"
   debug(api_url);
-  axios.get(api_url).then((response: AxiosResponse<CSPFullResponse>) => {
+  const data = {
+    "initial_word": "SLATE",
+    "target_word": target
+  }
+
+  axios.post(api_url, data).then((response: AxiosResponse<CSPFullResponse>) => {
     debug(response)
     const responseData = response.data;
     if (responseData.error) {
       console.error(responseData.error);
     }
-    debug(responseData);
+    console.log(responseData);
+    return [];
   });
   
   return [];
