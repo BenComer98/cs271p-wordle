@@ -1,6 +1,7 @@
 import csv
+import os
 
-FILE_NAME = 'resources/wordlist.csv'
+FILE_NAME = os.path.abspath('./resources/wordlist.csv')
 
 class WordList:
     def __init__(self):
