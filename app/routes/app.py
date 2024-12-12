@@ -149,5 +149,5 @@ def get_feedback_endpoint():
 
 
 
-def run_app():
+def run_app(environ, start_response):
     app.run()
