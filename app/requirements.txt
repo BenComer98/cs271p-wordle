@@ -1,5 +1,6 @@
 Flask==3.1.0
 Flask_Cors==5.0.0
+Gunicorn
 numpy==1.26.0
 setuptools==69.5.1
 tensorflow==2.18.0
