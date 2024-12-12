@@ -1,4 +1,5 @@
 import csv
+import os
 
 FILE_NAME = "./resources/wordlist.csv"
 

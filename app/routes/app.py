@@ -13,7 +13,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # 0 = all logs, 1 = warnings, 2 = errors, 3 = fatal
 import tensorflow as tf
 
-FILE_NAME = os.path.abspath("/models/wordle_10000_dqn_model.h5")
+FILE_NAME = "./models/wordle_10000_dqn_model.h5"
 
 app = create_app()
 
