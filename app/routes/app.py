@@ -13,6 +13,8 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # 0 = all logs, 1 = warnings, 2 = errors, 3 = fatal
 import tensorflow as tf
 
+FILE_NAME = "app/models/wordle_10000_dqn_model.h5"
+
 app = create_app()
 
 # Enable CORS for the entire app
@@ -67,8 +69,8 @@ def get_reinforcement():
     data = request.json
     if not data or 'initial_word' not in data or 'target_word' not in data:
         return jsonify({"error": "Missing initial word or target word"}), 400
-    
-    model = tf.keras.models.load_model("models/wordle_10000_dqn_model.h5")
+
+    model = tf.keras.models.load_model(FILE_NAME)
     env = WordleEnv()
     guesses, feedback = test_model(env, model, target_word=data["target_word"], start_word=data["initial_word"], max_attempts=6)
     return jsonify({
@@ -117,7 +119,7 @@ def get_best_guess_r_endpoint():
     if not word_lists:
         word_lists = []
 
-    model = tf.keras.models.load_model("models/wordle_10000_dqn_model.h5")
+    model = tf.keras.models.load_model(FILE_NAME)
     env = WordleEnv()
     start_word = words.split(",")[-1]
     if start_word not in word_list:
