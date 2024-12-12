@@ -2,8 +2,9 @@ import random
 from models.WordleEnv import WordleEnv
 import numpy as np
 import tensorflow as tf
+import os
 
-FILE_NAME = "./models/wordle_10000_dqn_model.h5"
+FILE_NAME = os.path.abspath("models/wordle_10000_dqn_model.h5")
 model = tf.keras.models.load_model(FILE_NAME)
 env = WordleEnv()
 
