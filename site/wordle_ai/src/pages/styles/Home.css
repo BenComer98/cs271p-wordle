@@ -1,5 +1,26 @@
+.HomePage {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+}
+
 .Home {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  padding: 5%;
+  align-items: center;
+}
+
+.Home > div {
+  display: flex;
+  flex-direction: row;
+}
+
+.Title {
+  margin-top: 30vh;
+  font-size: 10vh;
+  justify-content: center;
+  user-select: none;
 }

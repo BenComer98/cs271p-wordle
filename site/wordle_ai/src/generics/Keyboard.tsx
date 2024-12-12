@@ -2,7 +2,6 @@ import isAlpha from "../hooks/isAlpha";
 import KeyboardProps from "../interfaces/KeyboardProps";
 import SimpleKeyboard from "react-simple-keyboard";
 import "./styles/Keyboard.css";
-import debug from "../debug/debug";
 
 export default function Keyboard(props: KeyboardProps) {
   const onKeyPress = (key: string) => {
@@ -27,7 +26,7 @@ export default function Keyboard(props: KeyboardProps) {
 
   const display = {
     '{bksp}': 'DEL',
-    '{enter}': 'SUBMIT'
+    '{enter}': props.isSolver ? 'NEXT' : 'SUBMIT'
   }
   
   return <SimpleKeyboard 

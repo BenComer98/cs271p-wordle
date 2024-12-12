@@ -8,3 +8,15 @@
   margin-top: 5px;
   margin-bottom: 5px;
 }
+
+.BeatPrompt {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.Dropdown {
+  margin-top: 2%;
+  margin-bottom: 1%;
+}

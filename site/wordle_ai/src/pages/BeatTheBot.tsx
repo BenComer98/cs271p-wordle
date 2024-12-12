@@ -104,12 +104,9 @@ export default function BeatTheBot() {
   
   return (
     <div>
-      <div className="BackHomeButton">
-        <BackHomeButton />
-      </div>
       {gameStatus === GameStatus.Ready && (
-        <div>
-          <div>
+        <div className="BeatPrompt">
+          <div className="Dropdown">
             <Dropdown {...dropdownOptions} />
             {showNoAlgorithmSelected && (
               <div className="NoAlgorithmError">
@@ -128,6 +125,9 @@ export default function BeatTheBot() {
       {(gameStatus === GameStatus.Won || gameStatus === GameStatus.Lost) && (
         <Popup {...gameEndPopup} />
       )}
+      <div className="BackHomeButton">
+        <BackHomeButton />
+      </div>
     </div>
   )
 }

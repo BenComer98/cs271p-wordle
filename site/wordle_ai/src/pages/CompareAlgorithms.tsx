@@ -16,6 +16,7 @@ import debug from "../debug/debug";
 export default function CompareAlgorithms() {
   const [word, setWord] = useState<string>("");
   const [showInvalidWord, setShowInvalidWord] = useState(false);
+  const [showIncompleteWord, setShowIncompleteWord] = useState(false);
   const [constraintSatResult, setConstraintSatResult] = useState<LetterBoxProps[][] | null>(null);
   const [reinforcementResult, setReinforcementResult] = useState<LetterBoxProps[][] | null>(null);
   const [randomResult, setRandomResult] = useState<LetterBoxProps[][] | null>(null);
@@ -29,7 +30,6 @@ export default function CompareAlgorithms() {
 
   const runAlgorithms = async (word: string) => {
     runAlgorithm(Algorithm.ConstraintSat, word).then((result: LetterBoxProps[][]) => {
-      console.log(result);
       setConstraintSatResult(result);
     });
 
@@ -48,33 +48,41 @@ export default function CompareAlgorithms() {
 
   const handleSubmit = async (answer: string) => {
     if (answer.length === 5) {
-      if (await isValidWord(word)) {
-        setShowInvalidWord(false);
-        runAlgorithms(answer);
-      }
-      else {
-        setShowInvalidWord(true);
-      }
+      await isValidWord(answer).then((isValid: boolean) => {
+        if (isValid) {
+          setShowInvalidWord(false);
+          runAlgorithms(answer);
+        }
+        else {
+          setShowInvalidWord(true);
+        }
+      });
     }
     else {
       setShowInvalidWord(false);
+      setShowIncompleteWord(true);
     }
   }
 
   const handleChangeInput = (input: string) => {
     setWord(input.toUpperCase());
+    setShowInvalidWord(false);
+    setShowIncompleteWord(false);
   }
 
   const handleClickRandom = async () => {
+    setShowInvalidWord(false);
     await setWordAsync().then((answer: string) => {
       handleSubmit(answer);
       setWord(answer);
     });
-    setShowInvalidWord(false);
   }
 
   const handleClickRun = () => {
-    handleSubmit(word);
+    setWord((currentWord: string) => {
+      handleSubmit(currentWord);
+      return currentWord;
+    })
   }
 
   const getBoardFromResult = (result: LetterBoxProps[][] | null) => {
@@ -117,28 +125,30 @@ export default function CompareAlgorithms() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log(word);
   return (
     <div>
-      <div className="BackHomeButton">
-        <BackHomeButton />
-      </div>
       <div className="Page">
-        <div className="Prompt">
-          Submit a word OR click 'Random' for a Random Word!
+        <div className="UserPrompts">
+          <div className="Prompt">
+            Submit a word OR click 'Random' for a Random Word!
+          </div>
+          <div className="Entry">
+            <UserInput value={word} handleChange={handleChangeInput}/>
+            <Button onClick={handleClickRandom}>
+              Random
+            </Button>
+            <Button onClick={handleClickRun}>
+              Submit
+            </Button>
+          </div>
+          {showInvalidWord && (<div className="Error">
+            Sorry! {word} is not a valid word.
+          </div>)}
+          {showIncompleteWord && (<div className="Error">
+            Please enter a 5-letter word.
+          </div>)}
         </div>
-        <div className="Entry">
-          <UserInput value={word} handleChange={handleChangeInput}/>
-          <Button onClick={handleClickRandom}>
-            Random
-          </Button>
-          <Button onClick={handleClickRun}>
-            Submit
-          </Button>
-        </div>
-        {showInvalidWord && (<div className="ShowInvalidWord">
-          Sorry! {word} is not a valid word.
-        </div>)}
+        
         <div className="AI-Algorithm">
           {constraintSatResult && getBoardFromResult(constraintSatResult)}
           {constraintSatResult && <AlgorithmPanel algorithm="Constraint Satisfaction">
@@ -157,7 +167,9 @@ export default function CompareAlgorithms() {
             An algorithm that simply guesses random words without learning anything. Not AI.
           </AlgorithmPanel>}
         </div>
-        {}
+      </div>
+      <div className="BackHomeButton">
+        <BackHomeButton />
       </div>
     </div>
   );

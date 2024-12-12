@@ -314,9 +314,6 @@ export default function WordleSolver(props: WordleSolverProps) {
   return <div className="WordleSolver">
     <div className="WordleSolverContent">
       <div className="WordleBoardArea">
-        <div className="BackHomeButton">
-            <BackHomeButton />
-          </div>
         <div className="WordleSolverBoard">
           {letterBoxes.map((row: LetterBoxEnterProps[], rowIndex: number) => {
             return (
@@ -372,6 +369,11 @@ export default function WordleSolver(props: WordleSolverProps) {
       handleType={(letter: string) => handleType(letter)} 
       handleBackspace={() => handleBackspace()}
       handleSubmit={() => handleSubmit()}
+      isSolver
     />
+
+    <div className="BackHomeButton">
+       <BackHomeButton />
+    </div>
   </div>
 }

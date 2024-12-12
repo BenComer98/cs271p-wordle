@@ -1,12 +1,10 @@
 import BackHomeButton from "../generics/BackHomeButton";
 import "../generics/styles/BackHomeButton.css";
+import "./styles/Credits.css";
 
 export default function Credits() {
   return (
-    <div>
-      <div className="BackHomeButton">
-        <BackHomeButton />
-      </div>
+    <div className="Credits">
       <div>
         <b>Credits</b>  
       </div>
@@ -24,6 +22,9 @@ export default function Credits() {
       </div>
       <div>
         Code done in React-Typescript, Python, Flask
+      </div>
+      <div className="BackHomeButton">
+        <BackHomeButton />
       </div>
     </div>
   )
