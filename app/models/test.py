@@ -5,8 +5,8 @@ import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 import tensorflow as tf
 
-FILE_NAME = os.path.abspath("models/wordle_10000_dqn_model.h5")
-model = tf.keras.models.load_model("models/wordle_10000_dqn_model.h5")
+FILE_NAME = "app/models/wordle_10000_dqn_model.h5"
+model = tf.keras.models.load_model(FILE_NAME)
 env = WordleEnv()
 
 def similarity_score(word_idx, previous_guesses, target):
