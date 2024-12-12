@@ -10,6 +10,7 @@ from algorithms import WordleCSPNextBest
 from models.feedback import feedback, allowed_list, get_feedback
 import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # 0 = all logs, 1 = warnings, 2 = errors, 3 = fatal
 import tensorflow as tf
 
 app = create_app()

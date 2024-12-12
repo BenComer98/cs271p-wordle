@@ -1,5 +1,4 @@
 import csv
-import os
 
 FILE_NAME = "app/resources/wordlist.csv"
 

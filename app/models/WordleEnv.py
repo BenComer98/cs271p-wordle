@@ -1,7 +1,6 @@
 import csv
 import random
 import numpy as np
-import os
 
 FILE_NAME = "app/resources/wordlist.csv"
 
