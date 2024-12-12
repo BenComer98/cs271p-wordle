@@ -2,7 +2,7 @@ import csv
 import random
 import numpy as np
 
-FILE_NAME = "app/resources/wordlist.csv"
+FILE_NAME = "./resources/wordlist.csv"
 
 class WordleEnv:
     def __init__(self, word_length=5, max_attempts=5):

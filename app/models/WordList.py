@@ -1,6 +1,6 @@
 import csv
 
-FILE_NAME = "app/resources/wordlist.csv"
+FILE_NAME = "./resources/wordlist.csv"
 
 class WordList:
     def __init__(self):
