@@ -8,6 +8,8 @@ from models import WordList
 from algorithms import WordleCSP
 from algorithms import WordleCSPNextBest
 from models.feedback import feedback, allowed_list, get_feedback
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 import tensorflow as tf
 
 app = create_app()
