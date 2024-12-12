@@ -2,28 +2,38 @@
   width: 75%;
 }
 
+.UserPrompts {
+  margin-top: 10vh;
+}
+
 .Prompt {
-  margin-top: 2%;
-  margin-left: 20%;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
 }
 
 .Entry {
   margin-top: 1%;
-  margin-left: 15%;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
 }
 
-.InvalidWordError {
+.Error {
   color: red;
   margin-top: 5px;
   margin-bottom: 5px;
+  text-align: center;
+  width: 100vw;
 }
 
 .AI-Algorithm {
   display: flex;
-  justify-content: center;
+  justify-content:stretch;
   align-items: center;
   gap: 50px;
   margin-top: 20px;
   margin-left: 12%;
   margin-bottom: 20px;
+  width: 85vw;
 }

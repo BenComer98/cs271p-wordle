@@ -1,6 +1,7 @@
 import { ReactElement } from "react";
 import MainMenuButtonProps from "../interfaces/MainMenuButtonProps";
 import useRouteHandler from "../hooks/use-route-handler";
+import "./styles/MainMenuButton.css";
 
 export default function MainMenuButton(props: MainMenuButtonProps): ReactElement {
   const handleClick = useRouteHandler(props.route);

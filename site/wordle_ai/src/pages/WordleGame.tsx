@@ -202,9 +202,6 @@ export default function WordleGame(props: WordleGameProps) {
 
   return (
     <div> 
-      <div className="BackHomeButton">
-        <BackHomeButton />
-      </div>
       {gameStatus === GameStatus.Playing && 
         <div className="WordleGame">
           <div className="Board">
@@ -218,6 +215,9 @@ export default function WordleGame(props: WordleGameProps) {
       {(gameStatus === GameStatus.Won || gameStatus === GameStatus.Lost) && 
         <Popup {...afterGamePopup}/>
       }
+      <div className="BackHomeButton">
+        <BackHomeButton />
+      </div>
     </div>
   );
 }
