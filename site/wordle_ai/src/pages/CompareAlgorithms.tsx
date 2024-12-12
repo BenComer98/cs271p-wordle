@@ -152,7 +152,7 @@ export default function CompareAlgorithms() {
         <div className="AI-Algorithm">
           {constraintSatResult && getBoardFromResult(constraintSatResult)}
           {constraintSatResult && <AlgorithmPanel algorithm="Constraint Satisfaction">
-            TODO: Gaurav Please Describe
+            An approach that uses feedback (green, yellow, gray) to define and update constraints, iteratively narrowing down to possible solutions. By applying inclusion and exclusion rules, it refines the word list and selects optimal guesses to identify the target word efficiently.
           </AlgorithmPanel>}
         </div>
         <div className="AI-Algorithm">

@@ -89,10 +89,14 @@ export async function cspFull(target: string): Promise<LetterBoxProps[][]> {
       return [];
     }
 
-    if (responseData.solved && responseData.wordAttempts.length < 6) {
+    if (responseData.solved === true && responseData.wordAttempts.length < 6) {
       // The api only returns the guesses leading up to the correct one; Let's add that here
       responseData.wordAttempts.push(target);
       responseData.feedbacks.push(Array(5).fill('green'));
+    }
+    else {
+      responseData.wordAttempts = responseData.wordAttempts.slice(0, 6);
+      responseData.feedbacks = responseData.feedbacks.slice(0, 6);
     }
 
     return responseData.wordAttempts.map((guess: string, rowIndex: number) => {
