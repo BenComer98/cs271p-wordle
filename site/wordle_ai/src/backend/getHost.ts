@@ -1,3 +1,3 @@
 export default function getHost(): string {
-  return "https://cs271p-wordle.onrender.com";
+  return "http://18.144.1.60:8080/";
 }
