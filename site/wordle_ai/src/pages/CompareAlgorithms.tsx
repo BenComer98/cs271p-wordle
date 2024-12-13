@@ -158,7 +158,7 @@ export default function CompareAlgorithms() {
         <div className="AI-Algorithm">
           {reinforcementResult && getBoardFromResult(reinforcementResult)}
           {reinforcementResult && <AlgorithmPanel algorithm="Reinforcement Learning">
-            TODO: Adit Please Describe
+            The model predicts Q-values for all possible actions in each state and selects guesses that maximize these values. The selection is possibly random with a certain probability, but otherwise uses Q-values.
           </AlgorithmPanel>}
         </div>
         <div className="AI-Algorithm">
