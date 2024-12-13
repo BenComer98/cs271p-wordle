@@ -72,6 +72,7 @@ export default function CompareAlgorithms() {
 
   const handleClickRandom = async () => {
     setShowInvalidWord(false);
+    setShowIncompleteWord(false);
     await setWordAsync().then((answer: string) => {
       handleSubmit(answer);
       setWord(answer);
@@ -141,10 +142,10 @@ export default function CompareAlgorithms() {
               Submit
             </Button>
           </div>
-          {showInvalidWord && (<div className="Error">
+          {showInvalidWord && (<div className="CompareError">
             Sorry! {word} is not a valid word.
           </div>)}
-          {showIncompleteWord && (<div className="Error">
+          {showIncompleteWord && (<div className="CompareError">
             Please enter a 5-letter word.
           </div>)}
         </div>

@@ -123,6 +123,8 @@ export default function WordleSolver(props: WordleSolverProps) {
       }
       return [...table];
     });
+
+    setShowInvalidBoard(false);
   };
 
   const handleType = (letter: string) => {
